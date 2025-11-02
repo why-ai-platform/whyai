@@ -43,3 +43,5 @@ Empower everyone — from beginners to professionals — to **learn AI concepts*
 Run `npm i` to install the dependencies.
 
 Run `npm run dev` to start the development server.
+
+Need to make repo public before pushing to main (to see changes on deploymemnt) **Paid required for private**
