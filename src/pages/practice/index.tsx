@@ -1,9 +1,12 @@
 import { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Card } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { Badge } from '../../components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/tabs';
 import { ScrollArea } from '../../components/ui/scroll-area';
+import { BreadcrumbNav } from '../../components/common/BreadcrumbNav';
+import { ROUTES } from '../../constants';
 import { 
   Play, 
   RotateCcw, 
@@ -103,11 +106,28 @@ if __name__ == "__main__":
 `;
 
 export function PracticePage() {
+  const location = useLocation();
   const [selectedProblem, setSelectedProblem] = useState(mockProblems[0]);
   const [code, setCode] = useState(defaultCode);
   const [output, setOutput] = useState('');
   const [isRunning, setIsRunning] = useState(false);
   const [testResults, setTestResults] = useState<{ passed: number; total: number } | null>(null);
+  
+  // Check if navigated from playground
+  const fromPlayground = location.state?.fromPlayground || false;
+  
+  // Breadcrumb items based on navigation source
+  const breadcrumbItems = fromPlayground
+    ? [
+        { label: 'Home', path: ROUTES.HOME },
+        { label: 'Courses', path: ROUTES.COURSES },
+        { label: 'Playground', path: ROUTES.COURSES },
+        { label: 'Practice', path: ROUTES.PRACTICE },
+      ]
+    : [
+        { label: 'Home', path: ROUTES.HOME },
+        { label: 'Practice', path: ROUTES.PRACTICE },
+      ];
 
   const handleRunCode = async () => {
     setIsRunning(true);
@@ -164,7 +184,8 @@ Score: 2/3 test cases passed
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900">
+    <div className="bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900 pb-8 min-h-[calc(100vh-64px)]">
+      <BreadcrumbNav items={breadcrumbItems} />
       <div className="max-w-[1920px] mx-auto p-4">
         {/* Header */}
         <div className="mb-6">
@@ -176,7 +197,7 @@ Score: 2/3 test cases passed
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 h-[calc(100vh-200px)]">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 h-[calc(100vh-280px)]">
           {/* Problem List Sidebar */}
           <div className="lg:col-span-3">
             <Card className="h-full">

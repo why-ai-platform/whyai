@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Button } from '../../components/ui/button';
 import { motion } from 'motion/react';
-import { ArrowRight, BookOpen, Sparkles } from 'lucide-react';
+import { ArrowRight, LogIn, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../constants';
+import { LoginDialog } from './LoginDialog';
 
 const aiTerms = [
   { text: 'Artificial Intelligence', color: 'from-blue-500 to-cyan-500' },
@@ -18,6 +19,7 @@ export function Hero() {
   const [displayedText, setDisplayedText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
   const [charIndex, setCharIndex] = useState(0);
+  const [isLoginDialogOpen, setIsLoginDialogOpen] = useState(false);
 
   useEffect(() => {
     const currentTerm = aiTerms[currentTermIndex].text;
@@ -120,7 +122,16 @@ export function Hero() {
           </p>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8">
+          <div className="flex flex-row items-center justify-center gap-4 pt-8">
+            <Button 
+              size="lg" 
+              variant="outline" 
+              onClick={() => setIsLoginDialogOpen(true)}
+              className="text-lg px-8 py-6 border-2"
+            >
+              <LogIn className="mr-2 w-5 h-5" />
+              <span>Sign In</span>
+            </Button>
             <Button 
               size="lg" 
               onClick={() => navigate(ROUTES.COURSES)}
@@ -128,15 +139,6 @@ export function Hero() {
             >
               <span>Start Learning</span>
               <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
-            <Button 
-              size="lg" 
-              variant="outline" 
-              onClick={() => navigate(ROUTES.COURSES)}
-              className="text-lg px-8 py-6 border-2"
-            >
-              <BookOpen className="mr-2 w-5 h-5" />
-              <span>Explore Courses</span>
             </Button>
           </div>
 
@@ -149,25 +151,26 @@ export function Hero() {
           >
             <div className="text-center">
               <div className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
-                500+
+                50+
               </div>
               <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">Courses</div>
             </div>
             <div className="text-center">
               <div className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
-                1000+
+                200+
               </div>
               <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">Problems</div>
             </div>
             <div className="text-center">
               <div className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
-                50K+
+                1000+
               </div>
               <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">Learners</div>
             </div>
           </motion.div>
         </motion.div>
       </div>
+      <LoginDialog open={isLoginDialogOpen} onOpenChange={setIsLoginDialogOpen} />
     </section>
   );
 }

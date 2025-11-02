@@ -21,6 +21,7 @@ import { Badge } from '../../components/ui/badge';
 import { Progress } from '../../components/ui/progress';
 import { Button } from '../../components/ui/button';
 import { ScrollArea } from '../../components/ui/scroll-area';
+import { BreadcrumbNav } from '../../components/common/BreadcrumbNav';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
@@ -133,7 +134,15 @@ const courses: Course[] = [
 type TabType = 'courses' | 'playground' | 'dashboard';
 
 export function CoursesPage() {
-  const [activeTab, setActiveTab] = useState<TabType>('courses');
+  const [activeTab, setActiveTab] = useState<TabType>(() => {
+    // Check if playground tab should be activated from breadcrumb navigation
+    const savedTab = sessionStorage.getItem('activeTab');
+    if (savedTab === 'playground') {
+      sessionStorage.removeItem('activeTab'); // Clear after reading
+      return 'playground';
+    }
+    return 'courses';
+  });
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
@@ -328,7 +337,7 @@ print("Ready to code!")`}</pre>
         </div>
 
         <Button 
-          onClick={() => navigate(ROUTES.PRACTICE)}
+          onClick={() => navigate(ROUTES.PRACTICE, { state: { fromPlayground: true } })}
           className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
         >
           Go to Practice Platform
@@ -419,8 +428,15 @@ print("Ready to code!")`}</pre>
     </div>
   );
 
+  const breadcrumbItems = [
+    { label: 'Home', path: ROUTES.HOME },
+    { label: 'Courses', path: ROUTES.COURSES },
+    ...(activeTab !== 'courses' ? [{ label: activeTab === 'playground' ? 'Playground' : 'Dashboard', path: ROUTES.COURSES }] : []),
+  ];
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900">
+      <BreadcrumbNav items={breadcrumbItems} />
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Sidebar */}

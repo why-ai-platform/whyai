@@ -14,12 +14,10 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
 
   const socialLinks = [
-    { icon: Github, href: '#', label: 'GitHub' },
-    { icon: Twitter, href: '#', label: 'Twitter' },
-    { icon: Linkedin, href: '#', label: 'LinkedIn' },
-    { icon: Youtube, href: '#', label: 'YouTube' },
-    { icon: Facebook, href: '#', label: 'Facebook' },
-    { icon: Instagram, href: '#', label: 'Instagram' },
+    { icon: Twitter, href: 'https://x.com/whyyai', label: 'Twitter' },
+    { icon: Linkedin, href: 'https://www.linkedin.com/company/why-a-i/', label: 'LinkedIn' },
+    { icon: Facebook, href: 'https://www.facebook.com/profile.php?id=61582832198293', label: 'Facebook' },
+    { icon: Instagram, href: 'https://www.instagram.com/whyai.co.in/', label: 'Instagram' },
   ];
 
   const footerLinks = {
@@ -76,8 +74,8 @@ export function Footer() {
               </p>
               <div className="flex items-center space-x-2">
                 <Mail className="w-5 h-5 text-gray-400" />
-                <a href="mailto:hello@whyai.com" className="text-gray-400 hover:text-blue-400 transition-colors">
-                  hello@whyai.com
+                <a href="mailto:whyai1857@gmail.com" className="text-gray-400 hover:text-blue-400 transition-colors">
+                  whyai1857@gmail.com
                 </a>
               </div>
             </motion.div>
@@ -163,7 +161,7 @@ export function Footer() {
             </div>
             <div className="text-center md:text-right">
               <p className="text-gray-400 text-sm">
-                Join our community of 50,000+ AI learners worldwide
+                Join our community of 1000+ AI learners worldwide
               </p>
             </div>
           </div>
@@ -172,7 +170,7 @@ export function Footer() {
         {/* Copyright */}
         <div className="border-t border-gray-800 pt-8 text-center">
           <p className="text-gray-500 text-sm">
-            © {currentYear} WhyAi. All rights reserved. Built with ❤️ for AI learners worldwide.
+            © {currentYear} WhyAi. All rights reserved.
           </p>
         </div>
       </div>
