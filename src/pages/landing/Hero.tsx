@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '../../components/ui/button';
 import { motion } from 'motion/react';
-import { ArrowRight, LogIn, Sparkles } from 'lucide-react';
+import { ArrowRight, LogIn, Sparkles, Route, Terminal, Trophy } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../constants';
 import { LoginDialog } from './LoginDialog';
@@ -90,14 +90,14 @@ export function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="space-y-8"
+          className="space-y-6"
         >
           {/* Badge */}
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2 }}
-            className="inline-flex items-center space-x-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full shadow-lg border border-gray-200 dark:border-gray-700"
+            className="inline-flex items-center space-x-2 px-4 py-1 mb-2 bg-white dark:bg-gray-800 rounded-full shadow-lg border border-gray-200 dark:border-gray-700"
           >
             <Sparkles className="w-4 h-4 text-yellow-500" />
             <span className="text-sm text-gray-700 dark:text-gray-300">Learn from Industry Experts</span>
@@ -115,16 +115,16 @@ export function Hero() {
           </div>
 
           {/* Description */}
-          <p className="max-w-3xl mx-auto text-lg sm:text-xl text-gray-600 dark:text-gray-300">
+          <p className="max-w-3xl mx-auto text-lg sm:text-xl text-gray-600 dark:text-gray-300 mb-1">
             Your comprehensive platform to understand, learn, and practice Artificial Intelligence, 
             Machine Learning, Deep Learning, and cutting-edge technologies like Generative AI and Agentic AI. 
             From basics to advanced, we've got you covered.
           </p>
 
           {/* CTA Buttons */}
-          <div className="flex flex-row items-center justify-center gap-4 pt-8">
+          <div className="flex flex-row items-center justify-center gap-4 pt-8 mb-12">
             <Button 
-              size="lg" 
+              size="sm" 
               variant="outline" 
               onClick={() => setIsLoginDialogOpen(true)}
               className="text-lg px-8 py-6 border-2"
@@ -133,7 +133,7 @@ export function Hero() {
               <span>Sign In</span>
             </Button>
             <Button 
-              size="lg" 
+              size="sm" 
               onClick={() => navigate(ROUTES.COURSES)}
               className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-lg px-8 py-6"
             >
@@ -141,6 +141,46 @@ export function Hero() {
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
           </div>
+
+          {/* Feature Row (below CTA) */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="mx-auto mt-8 mb-1 max-w-5xl"
+          >
+            <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white/60 dark:bg-gray-900/60 backdrop-blur-md shadow-sm">
+              <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-gray-200 dark:divide-gray-800">
+                <div className="flex items-start gap-4 p-6">
+                  <div className="shrink-0 rounded-xl p-2 bg-gradient-to-br from-blue-500 to-purple-600 text-white">
+                    <Route className="w-5 h-5" />
+                  </div>
+                  <div className="text-left">
+                    <div className="font-semibold text-gray-900 dark:text-white">Guided Roadmaps</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">Step-by-step learning paths</div>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4 p-6">
+                  <div className="shrink-0 rounded-xl p-2 bg-gradient-to-br from-blue-500 to-purple-600 text-white">
+                    <Terminal className="w-5 h-5" />
+                  </div>
+                  <div className="text-left">
+                    <div className="font-semibold text-gray-900 dark:text-white">Interactive Playground</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">Run code with one click</div>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4 p-6">
+                  <div className="shrink-0 rounded-xl p-2 bg-gradient-to-br from-blue-500 to-purple-600 text-white">
+                    <Trophy className="w-5 h-5" />
+                  </div>
+                  <div className="text-left">
+                    <div className="font-semibold text-gray-900 dark:text-white">Contests & Practice</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">Sharpen skills with problems</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
 
           {/* Stats */}
           <motion.div
