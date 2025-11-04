@@ -9,6 +9,7 @@ import {
   Instagram
 } from 'lucide-react';
 import { Button } from '../ui/button';
+import logo from '../../logo.png';
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -60,12 +61,15 @@ export function Footer() {
               className="space-y-4"
             >
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-xl">W</span>
-                </div>
-                <span className="text-2xl font-bold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
-                  WhyAi
-                </span>
+                <motion.img
+                  src={logo}
+                  alt="WhyAi Logo"
+                  className="h-6 w-16 rounded-lg object-contain"
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.3 }}
+                />
               </div>
               <p className="text-gray-400 max-w-sm">
                 Your comprehensive platform to master Artificial Intelligence, Machine Learning, 
@@ -74,8 +78,8 @@ export function Footer() {
               </p>
               <div className="flex items-center space-x-2">
                 <Mail className="w-5 h-5 text-gray-400" />
-                <a href="mailto:whyai1857@gmail.com" className="text-gray-400 hover:text-blue-400 transition-colors">
-                  whyai1857@gmail.com
+                <a href="mailto:whyai@whyai.co.in" className="text-gray-400 hover:text-blue-400 transition-colors">
+                  whyai@whyai.co.in
                 </a>
               </div>
             </motion.div>
