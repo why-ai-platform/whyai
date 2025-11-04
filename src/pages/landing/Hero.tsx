@@ -85,7 +85,7 @@ export function Hero() {
         />
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-4 lg:px-6 py-20 text-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -97,7 +97,7 @@ export function Hero() {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2 }}
-            className="inline-flex items-center space-x-2 px-4 py-1 mb-2 bg-white dark:bg-gray-800 rounded-full shadow-lg border border-gray-200 dark:border-gray-700"
+            className="inline-flex items-center space-x-2 px-4 py-2 mb-2 bg-white dark:bg-gray-800 rounded-full shadow-lg border border-gray-200 dark:border-gray-700"
           >
             <Sparkles className="w-4 h-4 text-yellow-500" />
             <span className="text-sm text-gray-700 dark:text-gray-300">Learn from Industry Experts</span>
