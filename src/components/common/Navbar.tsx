@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { LoginDialog } from '../../pages/landing/LoginDialog';
+import logo from '../../logo.png';
 import { ROUTES } from '../../constants';
 
 interface NavbarProps {
@@ -41,19 +42,16 @@ export function Navbar({ darkMode, toggleDarkMode }: NavbarProps) {
       <nav className="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            {/* Logo and Company Name */}
-            <Link to={ROUTES.HOME} className="flex items-center space-x-3">
-              <motion.div
+            {/* Logo only */}
+            <Link to={ROUTES.HOME} className="flex items-center">
+              <motion.img
+                src={logo}
+                alt="WhyAi Logo"
+                className="h-8 w-18 rounded-lg object-contain"
                 initial={{ rotate: 0 }}
-                whileHover={{ rotate: 360 }}
-                transition={{ duration: 0.5 }}
-                className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center"
-              >
-                <span className="text-white font-bold text-xl">W</span>
-              </motion.div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
-                WhyAi
-              </span>
+                whileHover={{ rotate: 10 }}
+                transition={{ type: 'spring', stiffness: 200, damping: 12 }}
+              />
             </Link>
 
             {/* Desktop Navigation */}
