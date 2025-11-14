@@ -9,6 +9,7 @@ export const ROUTES = {
   DASHBOARD: "/dashboard",
   COURSES: "/courses",
   COURSE_DETAIL: "/courses/:id",
+  COURSE_VIEWER: "/courses/:id/learn",
   LEARNING_PATH: "/learning-path",
   PRACTICE: "/practice",
   PROBLEM_SOLVE: "/practice/:id",

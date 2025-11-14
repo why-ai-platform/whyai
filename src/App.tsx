@@ -14,6 +14,7 @@ import { PracticePage } from "./pages/practice";
 import { ProfilePage } from "./pages/profile";
 import { NewsPage } from "./pages/news";
 import { NewsDetail } from "./pages/news/NewsDetail";
+import { CourseViewer } from "./pages/courses/viewer/CourseViewer";
 import { useDarkMode } from "./hooks/useDarkMode";
 import { ROUTES } from "./constants";
 import { Toaster } from "./components/ui/sonner";
@@ -38,6 +39,10 @@ export default function App() {
             <Route
               path={ROUTES.COURSES}
               element={<CoursesPage />}
+            />
+            <Route
+              path={ROUTES.COURSE_VIEWER}
+              element={<CourseViewer />}
             />
             <Route
               path={ROUTES.DASHBOARD}
