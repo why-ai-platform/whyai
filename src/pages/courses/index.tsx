@@ -186,7 +186,7 @@ export function CoursesPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
             >
-              <Card className="p-6 hover:shadow-lg transition-all duration-300 border-2 hover:border-blue-500 dark:hover:border-blue-600 cursor-pointer">
+              <Card className="p-6 hover:shadow-lg transition-all duration-300 border-2 hover:border-blue-500 dark:hover:border-blue-600">
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center space-x-3">
                     <div className="p-3 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg">
@@ -244,7 +244,10 @@ export function CoursesPage() {
                   )}
                 </div>
 
-                <Button className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700">
+                <Button
+                  onClick={() => navigate(ROUTES.COURSE_VIEWER.replace(':id', course.id))}
+                  className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
+                >
                   {course.progress > 0 ? 'Continue' : 'Start Course'}
                   <ChevronRight className="ml-2 w-4 h-4" />
                 </Button>
