@@ -12,6 +12,8 @@ import { CoursesPage } from "./pages/courses";
 import { DashboardPage } from "./pages/dashboard";
 import { PracticePage } from "./pages/practice";
 import { ProfilePage } from "./pages/profile";
+import { NewsPage } from "./pages/news";
+import { NewsDetail } from "./pages/news/NewsDetail";
 import { useDarkMode } from "./hooks/useDarkMode";
 import { ROUTES } from "./constants";
 import { Toaster } from "./components/ui/sonner";
@@ -48,6 +50,14 @@ export default function App() {
             <Route
               path={ROUTES.PROFILE}
               element={<ProfilePage />}
+            />
+            <Route
+              path={ROUTES.NEWS}
+              element={<NewsPage />}
+            />
+            <Route
+              path={ROUTES.NEWS_DETAIL}
+              element={<NewsDetail />}
             />
             <Route
               path="*"
