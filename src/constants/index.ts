@@ -15,6 +15,8 @@ export const ROUTES = {
   CONTESTS: "/contests",
   CONTEST_DETAIL: "/contests/:id",
   PROFILE: "/profile",
+  NEWS: "/news",
+  NEWS_DETAIL: "/news/:id",
 };
 
 export const DIFFICULTY_LEVELS = {

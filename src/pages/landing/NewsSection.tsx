@@ -1,9 +1,12 @@
+import React from 'react';
 import { motion } from 'motion/react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
 import { Badge } from '../../components/ui/badge';
 import { Button } from '../../components/ui/button';
 import { MessageSquare, TrendingUp, Calendar, ExternalLink } from 'lucide-react';
 import { ImageWithFallback } from '../../components/figma/ImageWithFallback';
+import { ROUTES } from '../../constants';
 
 const newsItems = [
   {
@@ -49,6 +52,16 @@ const newsItems = [
 ];
 
 export function NewsSection() {
+  const navigate = useNavigate();
+
+  const handleNewsClick = (id: number) => {
+    navigate(ROUTES.NEWS_DETAIL.replace(':id', id.toString()));
+  };
+
+  const handleViewAllClick = () => {
+    navigate(ROUTES.NEWS);
+  };
+
   return (
     <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-900">
       <div className="max-w-7xl mx-auto">
@@ -80,7 +93,10 @@ export function NewsSection() {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
             >
-              <Card className="group hover:shadow-xl transition-shadow duration-300 overflow-hidden h-full">
+              <Card
+                className="group hover:shadow-xl transition-shadow duration-300 overflow-hidden h-full cursor-pointer"
+                onClick={() => handleNewsClick(item.id)}
+              >
                 <div className="relative overflow-hidden h-48">
                   <ImageWithFallback
                     src={item.image}
@@ -109,11 +125,23 @@ export function NewsSection() {
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center justify-between">
-                    <Button variant="ghost" size="sm" className="text-gray-600 dark:text-gray-400">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-gray-600 dark:text-gray-400"
+                      onClick={(e: React.MouseEvent) => e.stopPropagation()}
+                    >
                       <MessageSquare className="w-4 h-4 mr-2" />
                       {item.comments} Comments
                     </Button>
-                    <Button variant="link" size="sm">
+                    <Button
+                      variant="link"
+                      size="sm"
+                      onClick={(e: React.MouseEvent) => {
+                        e.stopPropagation();
+                        handleNewsClick(item.id);
+                      }}
+                    >
                       Read More
                       <ExternalLink className="w-4 h-4 ml-1" />
                     </Button>
@@ -131,7 +159,12 @@ export function NewsSection() {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="text-center mt-12"
         >
-          <Button size="lg" variant="outline" className="border-2">
+          <Button
+            size="lg"
+            variant="outline"
+            className="border-2"
+            onClick={handleViewAllClick}
+          >
             View All News
             <ExternalLink className="ml-2 w-4 h-4" />
           </Button>
