@@ -38,6 +38,13 @@ Empower everyone — from beginners to professionals — to **learn AI concepts*
 
 ---
 
+## Local Development
+
+This project is being developed using Git feature branches
+
+
+---
+
 ## Running the code
 
 Run `npm i` to install the dependencies.
