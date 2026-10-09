@@ -1,5 +1,4 @@
 import { Moon, Sun, Menu, X, LogOut, User } from 'lucide-react';
-import { Button } from '../ui/button';
 import { Switch } from '../ui/switch';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
@@ -8,6 +7,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { LoginDialog } from '../../pages/landing/LoginDialog';
 import logo from '../../logo.png';
 import { ROUTES } from '../../constants';
+import { useIsMobile } from '../ui/use-mobile';
 
 interface NavbarProps {
   darkMode: boolean;
@@ -15,6 +15,7 @@ interface NavbarProps {
 }
 
 export function Navbar({ darkMode, toggleDarkMode }: NavbarProps) {
+  const isMobile = useIsMobile();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showLoginDialog, setShowLoginDialog] = useState(false);
   const { isAuthenticated, user, logout } = useAuth();
@@ -32,175 +33,181 @@ export function Navbar({ darkMode, toggleDarkMode }: NavbarProps) {
     ...(isAuthenticated ? [{ name: 'Dashboard', path: ROUTES.DASHBOARD }] : []),
   ];
 
+  const linkStyle = (active: boolean): React.CSSProperties => ({
+    fontSize: '0.875rem',
+    fontWeight: 500,
+    color: active ? 'var(--wa-accent)' : 'var(--wa-text-secondary)',
+    transition: 'color 0.15s',
+  });
+
   return (
     <>
-      <LoginDialog 
-        open={showLoginDialog} 
-        onOpenChange={setShowLoginDialog}
-      />
-      
-      <nav className="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            {/* Logo only */}
+      <LoginDialog open={showLoginDialog} onOpenChange={setShowLoginDialog} />
+
+      <nav
+        className="sticky top-0 z-50"
+        style={{
+          background: 'var(--wa-surface)',
+          borderBottom: '1px solid var(--wa-border)',
+        }}
+      >
+        <div className="mx-auto px-4" style={{ maxWidth: '1280px' }}>
+          <div className="flex items-center justify-between" style={{ height: '56px' }}>
             <Link to={ROUTES.HOME} className="flex items-center">
               <motion.img
                 src={logo}
                 alt="WhyAi Logo"
-                className="h-8 w-18 rounded-lg object-contain"
+                className="object-contain"
+                style={{ height: '28px', width: 'auto' }}
                 initial={{ rotate: 0 }}
-                whileHover={{ rotate: 10 }}
+                whileHover={{ rotate: 6 }}
                 transition={{ type: 'spring', stiffness: 200, damping: 12 }}
               />
             </Link>
 
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-6">
-              {/* Nav Links */}
-              {navLinks.map((link) => (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  className={`transition-colors ${
-                    location.pathname === link.path
-                      ? 'text-blue-600 dark:text-blue-400'
-                      : 'text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'
-                  }`}
-                >
-                  {link.name}
-                </Link>
-              ))}
-              
-              {/* Dark Mode Toggle */}
-              <div className="flex items-center space-x-2 px-3 py-2 rounded-lg bg-gray-100 dark:bg-gray-800">
-                <Sun className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-                <Switch checked={darkMode} onCheckedChange={toggleDarkMode} />
-                <Moon className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-              </div>
-
-              {/* Auth Buttons */}
-              {!isAuthenticated ? (
-                <>
-                  <Button variant="ghost" onClick={() => setShowLoginDialog(true)}>
-                    Login
-                  </Button>
-                  <Button 
-                    onClick={() => setShowLoginDialog(true)} 
-                    className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
-                  >
-                    Sign Up
-                  </Button>
-                </>
-              ) : (
-                <div className="flex items-center space-x-3">
-                  <Link to={ROUTES.PROFILE}>
-                    <Button variant="ghost" size="icon">
-                      <User className="w-5 h-5" />
-                    </Button>
+            {!isMobile ? (
+              <div className="flex items-center" style={{ gap: '28px' }}>
+                {navLinks.map((link) => (
+                  <Link key={link.path} to={link.path} style={linkStyle(location.pathname === link.path)}>
+                    {link.name}
                   </Link>
-                  <Button variant="ghost" size="icon" onClick={handleLogout}>
-                    <LogOut className="w-5 h-5" />
-                  </Button>
-                  <span className="text-sm text-gray-700 dark:text-gray-300">
-                    {user?.name}
-                  </span>
-                </div>
-              )}
-            </div>
+                ))}
 
-            {/* Mobile Menu Button */}
-            <div className="md:hidden">
-              <Button
-                variant="ghost"
-                size="icon"
+                <div
+                  className="flex items-center"
+                  style={{ gap: '8px', padding: '4px 10px', borderRadius: 'var(--wa-radius-md)', background: 'var(--wa-bg)' }}
+                >
+                  <Sun className="w-3.5 h-3.5" style={{ color: 'var(--wa-text-secondary)' }} />
+                  <Switch checked={darkMode} onCheckedChange={toggleDarkMode} />
+                  <Moon className="w-3.5 h-3.5" style={{ color: 'var(--wa-text-secondary)' }} />
+                </div>
+
+                {!isAuthenticated ? (
+                  <div className="flex items-center" style={{ gap: '10px' }}>
+                    <button className="wa-btn wa-btn-secondary" onClick={() => setShowLoginDialog(true)}>
+                      Login
+                    </button>
+                    <button className="wa-btn wa-btn-primary" onClick={() => setShowLoginDialog(true)}>
+                      Sign Up
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex items-center" style={{ gap: '14px' }}>
+                    <Link to={ROUTES.PROFILE} aria-label="Profile" style={{ color: 'var(--wa-text-secondary)' }}>
+                      <User className="w-[18px] h-[18px]" />
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      aria-label="Log out"
+                      style={{ color: 'var(--wa-text-secondary)', background: 'none', border: 'none', cursor: 'pointer', display: 'flex' }}
+                    >
+                      <LogOut className="w-[18px] h-[18px]" />
+                    </button>
+                    <span style={{ fontSize: '0.875rem', color: 'var(--wa-text)' }}>{user?.name}</span>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                aria-label="Menu"
+                style={{ color: 'var(--wa-text)', background: 'none', border: 'none', cursor: 'pointer', display: 'flex' }}
               >
-                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-              </Button>
-            </div>
+                {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              </button>
+            )}
           </div>
 
-          {/* Mobile Menu */}
-          <AnimatePresence>
-            {mobileMenuOpen && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className="md:hidden py-4 border-t border-gray-200 dark:border-gray-800"
-              >
-                <div className="flex flex-col space-y-3">
-                  {navLinks.map((link) => (
-                    <Link
-                      key={link.path}
-                      to={link.path}
-                      onClick={() => setMobileMenuOpen(false)}
-                      className={`px-4 py-2 rounded-lg transition-colors ${
-                        location.pathname === link.path
-                          ? 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400'
-                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
-                      }`}
-                    >
-                      {link.name}
-                    </Link>
-                  ))}
-                  
-                  <div className="flex items-center justify-between px-4 py-2">
-                    <span className="text-sm text-gray-600 dark:text-gray-400">Dark Mode</span>
-                    <div className="flex items-center space-x-2">
-                      <Sun className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-                      <Switch checked={darkMode} onCheckedChange={toggleDarkMode} />
-                      <Moon className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-                    </div>
-                  </div>
-                  
-                  {!isAuthenticated ? (
-                    <>
-                      <Button 
-                        variant="ghost" 
-                        onClick={() => {
-                          setShowLoginDialog(true);
-                          setMobileMenuOpen(false);
-                        }} 
-                        className="w-full"
-                      >
-                        Login
-                      </Button>
-                      <Button 
-                        onClick={() => {
-                          setShowLoginDialog(true);
-                          setMobileMenuOpen(false);
-                        }} 
-                        className="w-full bg-gradient-to-r from-blue-500 to-purple-600"
-                      >
-                        Sign Up
-                      </Button>
-                    </>
-                  ) : (
-                    <>
-                      <Link to={ROUTES.PROFILE} onClick={() => setMobileMenuOpen(false)}>
-                        <Button variant="ghost" className="w-full justify-start">
-                          <User className="w-4 h-4 mr-2" />
-                          Profile - {user?.name}
-                        </Button>
-                      </Link>
-                      <Button 
-                        variant="ghost" 
-                        onClick={() => {
-                          handleLogout();
-                          setMobileMenuOpen(false);
+          {isMobile && (
+            <AnimatePresence>
+              {mobileMenuOpen && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  style={{ borderTop: '1px solid var(--wa-border)', overflow: 'hidden' }}
+                  className="py-3"
+                >
+                  <div className="flex flex-col" style={{ gap: '4px' }}>
+                    {navLinks.map((link) => (
+                      <Link
+                        key={link.path}
+                        to={link.path}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="px-3 py-2"
+                        style={{
+                          borderRadius: 'var(--wa-radius-md)',
+                          fontSize: '0.9rem',
+                          fontWeight: 500,
+                          color: location.pathname === link.path ? 'var(--wa-accent)' : 'var(--wa-text)',
+                          background: location.pathname === link.path ? 'var(--wa-accent-tint)' : 'transparent',
                         }}
-                        className="w-full justify-start"
                       >
-                        <LogOut className="w-4 h-4 mr-2" />
-                        Logout
-                      </Button>
-                    </>
-                  )}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                        {link.name}
+                      </Link>
+                    ))}
+
+                    <div className="flex items-center justify-between px-3 py-2">
+                      <span style={{ fontSize: '0.85rem', color: 'var(--wa-text-secondary)' }}>Dark Mode</span>
+                      <div className="flex items-center" style={{ gap: '8px' }}>
+                        <Sun className="w-3.5 h-3.5" style={{ color: 'var(--wa-text-secondary)' }} />
+                        <Switch checked={darkMode} onCheckedChange={toggleDarkMode} />
+                        <Moon className="w-3.5 h-3.5" style={{ color: 'var(--wa-text-secondary)' }} />
+                      </div>
+                    </div>
+
+                    {!isAuthenticated ? (
+                      <div className="flex flex-col px-3" style={{ gap: '8px', paddingTop: '4px' }}>
+                        <button
+                          className="wa-btn wa-btn-secondary"
+                          style={{ width: '100%' }}
+                          onClick={() => {
+                            setShowLoginDialog(true);
+                            setMobileMenuOpen(false);
+                          }}
+                        >
+                          Login
+                        </button>
+                        <button
+                          className="wa-btn wa-btn-primary"
+                          style={{ width: '100%' }}
+                          onClick={() => {
+                            setShowLoginDialog(true);
+                            setMobileMenuOpen(false);
+                          }}
+                        >
+                          Sign Up
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col" style={{ paddingTop: '4px' }}>
+                        <Link
+                          to={ROUTES.PROFILE}
+                          onClick={() => setMobileMenuOpen(false)}
+                          className="flex items-center px-3 py-2"
+                          style={{ gap: '8px', fontSize: '0.9rem', color: 'var(--wa-text)' }}
+                        >
+                          <User className="w-4 h-4" />
+                          Profile — {user?.name}
+                        </Link>
+                        <button
+                          onClick={() => {
+                            handleLogout();
+                            setMobileMenuOpen(false);
+                          }}
+                          className="flex items-center px-3 py-2"
+                          style={{ gap: '8px', fontSize: '0.9rem', color: 'var(--wa-text)', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}
+                        >
+                          <LogOut className="w-4 h-4" />
+                          Logout
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          )}
         </div>
       </nav>
     </>

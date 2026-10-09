@@ -26,6 +26,8 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { ROUTES } from '../../constants';
+import { useIsMobile } from '../../components/ui/use-mobile';
+import '../../pages/courses/viewer/courseViewer.css';
 
 interface Course {
   id: string;
@@ -145,6 +147,7 @@ export function CoursesPage() {
   });
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   const tabs = [
     { id: 'courses' as TabType, label: 'All Courses', icon: BookOpen },
@@ -153,15 +156,17 @@ export function CoursesPage() {
   ];
 
   const getLevelColor = (level: string) => {
+    // Semantic, not decorative — one restrained color per difficulty, same
+    // treatment in both themes via the shared --wa- tokens.
     switch (level) {
       case 'Beginner':
-        return 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300';
+        return { background: 'var(--wa-success-tint)', color: 'var(--wa-success)' };
       case 'Intermediate':
-        return 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300';
+        return { background: 'var(--wa-accent-tint)', color: 'var(--wa-accent)' };
       case 'Advanced':
-        return 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300';
+        return { background: 'var(--wa-warning-tint)', color: 'var(--wa-warning)' };
       default:
-        return 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300';
+        return { background: 'var(--wa-bg)', color: 'var(--wa-text-secondary)' };
     }
   };
 
@@ -186,35 +191,48 @@ export function CoursesPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
             >
-              <Card className="p-6 hover:shadow-lg transition-all duration-300 border-2 hover:border-blue-500 dark:hover:border-blue-600">
+              <Card className="wa-card p-6" style={{ transition: 'border-color 0.15s' }}>
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center space-x-3">
-                    <div className="p-3 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg">
-                      <Icon className="w-6 h-6 text-white" />
+                    <div
+                      className="flex items-center justify-center flex-shrink-0"
+                      style={{ width: '40px', height: '40px', borderRadius: 'var(--wa-radius-md)', background: 'var(--wa-accent-tint)' }}
+                    >
+                      <Icon className="w-5 h-5" style={{ color: 'var(--wa-accent)' }} />
                     </div>
                     <div>
-                      <h3 className="font-bold text-lg text-gray-900 dark:text-white">
+                      <h3 style={{ fontWeight: 600, fontSize: '1.05rem', color: 'var(--wa-text)' }}>
                         {course.title}
                       </h3>
-                      <Badge className={getLevelColor(course.level)}>
+                      <span
+                        style={{
+                          display: 'inline-block',
+                          fontSize: '0.72rem',
+                          fontWeight: 600,
+                          padding: '0.1rem 0.5rem',
+                          borderRadius: 'var(--wa-radius-sm)',
+                          marginTop: '0.25rem',
+                          ...getLevelColor(course.level),
+                        }}
+                      >
                         {course.level}
-                      </Badge>
+                      </span>
                     </div>
                   </div>
-                  {course.locked && <Lock className="w-5 h-5 text-gray-400" />}
+                  {course.locked && <Lock className="w-4 h-4" style={{ color: 'var(--wa-text-secondary)' }} />}
                 </div>
 
-                <p className="text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">
+                <p style={{ color: 'var(--wa-text-secondary)', fontSize: '0.875rem', marginBottom: '1rem' }} className="line-clamp-2">
                   {course.description}
                 </p>
 
-                <div className="flex items-center space-x-4 mb-4 text-sm text-gray-600 dark:text-gray-400">
+                <div className="flex items-center space-x-4 mb-4" style={{ fontSize: '0.8rem', color: 'var(--wa-text-secondary)' }}>
                   <div className="flex items-center space-x-1">
-                    <Clock className="w-4 h-4" />
+                    <Clock className="w-3.5 h-3.5" />
                     <span>{course.duration}</span>
                   </div>
                   <div className="flex items-center space-x-1">
-                    <BookOpen className="w-4 h-4" />
+                    <BookOpen className="w-3.5 h-3.5" />
                     <span>{course.lessons} lessons</span>
                   </div>
                 </div>
@@ -222,40 +240,37 @@ export function CoursesPage() {
                 {course.progress > 0 && (
                   <div className="mb-4">
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm text-gray-600 dark:text-gray-400">Progress</span>
-                      <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">
+                      <span style={{ fontSize: '0.8rem', color: 'var(--wa-text-secondary)' }}>Progress</span>
+                      <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--wa-accent)' }}>
                         {course.progress}%
                       </span>
                     </div>
-                    <Progress value={course.progress} className="h-2" />
+                    <Progress value={course.progress} className="h-1.5" />
                   </div>
                 )}
 
                 <div className="flex flex-wrap gap-2 mb-4">
                   {course.topics.slice(0, 3).map((topic) => (
-                    <Badge key={topic} variant="outline" className="text-xs">
+                    <span key={topic} className="wa-pill" style={{ fontSize: '0.7rem' }}>
                       {topic}
-                    </Badge>
+                    </span>
                   ))}
                   {course.topics.length > 3 && (
-                    <Badge variant="outline" className="text-xs">
+                    <span className="wa-pill" style={{ fontSize: '0.7rem' }}>
                       +{course.topics.length - 3} more
-                    </Badge>
+                    </span>
                   )}
                 </div>
 
-                <Button
+                <button
                   onClick={() => navigate(ROUTES.COURSE_VIEWER.replace(':id', course.id))}
                   disabled={course.locked}
-                  className={
-                    course.locked
-                      ? 'w-full cursor-not-allowed opacity-60'
-                      : 'w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700'
-                  }
+                  className={`wa-btn ${course.locked ? 'wa-btn-secondary' : 'wa-btn-primary'}`}
+                  style={{ width: '100%', opacity: course.locked ? 0.6 : 1, cursor: course.locked ? 'not-allowed' : 'pointer' }}
                 >
                   {course.locked ? 'Coming Soon' : course.progress > 0 ? 'Continue' : 'Start Course'}
-                  <ChevronRight className="ml-2 w-4 h-4" />
-                </Button>
+                  <ChevronRight className="w-4 h-4" />
+                </button>
               </Card>
             </motion.div>
           );
@@ -280,23 +295,23 @@ export function CoursesPage() {
           <h3 className="text-xl font-bold text-gray-900 dark:text-white">
             Interactive Coding Platform
           </h3>
-          <Badge className="bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
+          <span className="wa-pill" style={{ background: 'var(--wa-success-tint)', color: 'var(--wa-success)' }}>
             GPU Enabled
-          </Badge>
+          </span>
         </div>
-        
-        <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-6 mb-6">
+
+        <div className="rounded-lg p-6 mb-6" style={{ background: 'var(--wa-bg)', border: '1px solid var(--wa-border)' }}>
           <div className="flex items-center justify-between mb-4">
-            <span className="text-sm text-gray-600 dark:text-gray-400">Python 3.10 | TensorFlow 2.x | PyTorch 2.x</span>
+            <span style={{ fontSize: '0.85rem', color: 'var(--wa-text-secondary)' }}>Python 3.10 | TensorFlow 2.x | PyTorch 2.x</span>
             <div className="flex space-x-2">
               <Button size="sm" variant="outline">Reset</Button>
-              <Button size="sm" className="bg-gradient-to-r from-blue-500 to-purple-600">
+              <button className="wa-btn wa-btn-primary">
                 Run Code
-              </Button>
+              </button>
             </div>
           </div>
-          
-          <div className="bg-gray-900 rounded-lg p-4 font-mono text-sm text-green-400">
+
+          <div className="rounded-lg p-4" style={{ background: 'var(--wa-code-bg)', fontFamily: 'var(--wa-font-mono)', fontSize: '0.85rem', color: 'var(--wa-success)' }}>
             <pre>{`# Import libraries
 import numpy as np
 import tensorflow as tf
@@ -313,44 +328,45 @@ print("Ready to code!")`}</pre>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <Card className="p-4">
-            <h4 className="font-semibold mb-2 text-gray-900 dark:text-white">Practice Problems</h4>
-            <p className="text-2xl font-bold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent mb-2">
+          <Card className="p-4 wa-card">
+            <h4 style={{ fontWeight: 600, color: 'var(--wa-text)', marginBottom: '0.5rem' }}>Practice Problems</h4>
+            <p style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--wa-accent)', marginBottom: '0.5rem' }}>
               1000+
             </p>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p style={{ fontSize: '0.85rem', color: 'var(--wa-text-secondary)' }}>
               From basic to advanced
             </p>
           </Card>
-          
-          <Card className="p-4">
-            <h4 className="font-semibold mb-2 text-gray-900 dark:text-white">Contest Ready</h4>
-            <p className="text-2xl font-bold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent mb-2">
+
+          <Card className="p-4 wa-card">
+            <h4 style={{ fontWeight: 600, color: 'var(--wa-text)', marginBottom: '0.5rem' }}>Contest Ready</h4>
+            <p style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--wa-accent)', marginBottom: '0.5rem' }}>
               LeetCode Style
             </p>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p style={{ fontSize: '0.85rem', color: 'var(--wa-text-secondary)' }}>
               Test cases & submissions
             </p>
           </Card>
-          
-          <Card className="p-4">
-            <h4 className="font-semibold mb-2 text-gray-900 dark:text-white">GPU Access</h4>
-            <p className="text-2xl font-bold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent mb-2">
+
+          <Card className="p-4 wa-card">
+            <h4 style={{ fontWeight: 600, color: 'var(--wa-text)', marginBottom: '0.5rem' }}>GPU Access</h4>
+            <p style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--wa-accent)', marginBottom: '0.5rem' }}>
               Free Tier
             </p>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p style={{ fontSize: '0.85rem', color: 'var(--wa-text-secondary)' }}>
               Run ML models efficiently
             </p>
           </Card>
         </div>
 
-        <Button 
+        <button
           onClick={() => navigate(ROUTES.PRACTICE, { state: { fromPlayground: true } })}
-          className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
+          className="wa-btn wa-btn-primary"
+          style={{ width: '100%' }}
         >
           Go to Practice Platform
-          <ChevronRight className="ml-2 w-4 h-4" />
-        </Button>
+          <ChevronRight className="w-4 h-4" />
+        </button>
       </Card>
     </div>
   );
@@ -367,72 +383,65 @@ print("Ready to code!")`}</pre>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="p-6">
+        <Card className="p-6 wa-card">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-gray-900 dark:text-white">Courses Enrolled</h3>
-            <BookOpen className="w-5 h-5 text-blue-500" />
+            <h3 style={{ fontWeight: 600, color: 'var(--wa-text)' }}>Courses Enrolled</h3>
+            <BookOpen className="w-4 h-4" style={{ color: 'var(--wa-accent)' }} />
           </div>
-          <p className="text-3xl font-bold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
-            3
-          </p>
+          <p style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--wa-text)' }}>3</p>
         </Card>
 
-        <Card className="p-6">
+        <Card className="p-6 wa-card">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-gray-900 dark:text-white">Problems Solved</h3>
-            <CheckCircle2 className="w-5 h-5 text-green-500" />
+            <h3 style={{ fontWeight: 600, color: 'var(--wa-text)' }}>Problems Solved</h3>
+            <CheckCircle2 className="w-4 h-4" style={{ color: 'var(--wa-success)' }} />
           </div>
-          <p className="text-3xl font-bold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
-            47
-          </p>
+          <p style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--wa-text)' }}>47</p>
         </Card>
 
-        <Card className="p-6">
+        <Card className="p-6 wa-card">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-gray-900 dark:text-white">Learning Streak</h3>
-            <BarChart className="w-5 h-5 text-orange-500" />
+            <h3 style={{ fontWeight: 600, color: 'var(--wa-text)' }}>Learning Streak</h3>
+            <BarChart className="w-4 h-4" style={{ color: 'var(--wa-warning)' }} />
           </div>
-          <p className="text-3xl font-bold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
-            12 days
-          </p>
+          <p style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--wa-text)' }}>12 days</p>
         </Card>
       </div>
 
-      <Card className="p-6">
-        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Continue Learning</h3>
+      <Card className="p-6 wa-card">
+        <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--wa-text)', marginBottom: '1rem' }}>Continue Learning</h3>
         <div className="space-y-4">
           {courses.slice(0, 3).map((course) => {
             const Icon = course.icon;
             return (
-              <div key={course.id} className="flex items-center space-x-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                <div className="p-3 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg">
-                  <Icon className="w-5 h-5 text-white" />
+              <div key={course.id} className="flex items-center space-x-4 p-4 rounded-lg" style={{ background: 'var(--wa-bg)' }}>
+                <div className="flex items-center justify-center flex-shrink-0" style={{ width: '40px', height: '40px', borderRadius: 'var(--wa-radius-md)', background: 'var(--wa-accent-tint)' }}>
+                  <Icon className="w-5 h-5" style={{ color: 'var(--wa-accent)' }} />
                 </div>
                 <div className="flex-1">
-                  <h4 className="font-semibold text-gray-900 dark:text-white">{course.title}</h4>
+                  <h4 style={{ fontWeight: 600, color: 'var(--wa-text)' }}>{course.title}</h4>
                   <div className="flex items-center space-x-2 mt-2">
                     <Progress value={Math.random() * 100} className="h-2 flex-1" />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                    <span style={{ fontSize: '0.8rem', color: 'var(--wa-text-secondary)' }}>
                       {Math.floor(Math.random() * 100)}%
                     </span>
                   </div>
                 </div>
-                <Button size="sm" className="bg-gradient-to-r from-blue-500 to-purple-600">
-                  Continue
-                </Button>
+                <button className="wa-btn wa-btn-secondary">Continue</button>
               </div>
             );
           })}
         </div>
       </Card>
 
-      <Button 
+      <button
         onClick={() => navigate(ROUTES.DASHBOARD)}
-        className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
+        className="wa-btn wa-btn-primary"
+        style={{ width: '100%' }}
       >
         View Full Dashboard
-        <ChevronRight className="ml-2 w-4 h-4" />
-      </Button>
+        <ChevronRight className="w-4 h-4" />
+      </button>
     </div>
   );
 
@@ -443,29 +452,26 @@ print("Ready to code!")`}</pre>
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900">
+    <div className="min-h-screen" style={{ background: 'var(--wa-bg)' }}>
       <BreadcrumbNav items={breadcrumbItems} />
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="flex flex-col lg:flex-row gap-6">
+        <div className="flex gap-6" style={{ flexDirection: isMobile ? 'column' : 'row' }}>
           {/* Sidebar */}
-          <div className="lg:w-64 flex-shrink-0">
-            <Card className="p-4 sticky top-20">
-              <h3 className="font-bold text-lg mb-4 text-gray-900 dark:text-white">Navigation</h3>
-              <nav className="space-y-2">
+          <div className="flex-shrink-0" style={{ width: isMobile ? '100%' : '256px' }}>
+            <Card className="p-4 wa-card" style={isMobile ? undefined : { position: 'sticky', top: '80px' }}>
+              <div className="cv-sidebar-label">Navigation</div>
+              <nav className="space-y-1">
                 {tabs.map((tab) => {
                   const Icon = tab.icon;
                   return (
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all ${
-                        activeTab === tab.id
-                          ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg'
-                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
-                      }`}
+                      className={`cv-nav-item${activeTab === tab.id ? ' cv-nav-item--active' : ''}`}
+                      style={{ padding: '0.65rem 0.75rem' }}
                     >
-                      <Icon className="w-5 h-5" />
-                      <span className="font-medium">{tab.label}</span>
+                      <Icon className="w-4 h-4" />
+                      <span className="cv-nav-title" style={{ fontWeight: 500 }}>{tab.label}</span>
                     </button>
                   );
                 })}

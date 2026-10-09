@@ -1,213 +1,104 @@
-import React, { useState, useEffect } from 'react';
-import { Button } from '../../components/ui/button';
+import { useState } from 'react';
 import { motion } from 'motion/react';
-import { ArrowRight, LogIn, Sparkles, Route, Terminal, Trophy } from 'lucide-react';
+import { ArrowRight, LogIn, Route, Terminal, Trophy } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../constants';
 import { LoginDialog } from './LoginDialog';
 
-const aiTerms = [
-  { text: 'Artificial Intelligence', color: 'from-blue-500 to-cyan-500' },
-  { text: 'Machine Learning', color: 'from-purple-500 to-pink-500' },
-  { text: 'Deep Learning', color: 'from-green-500 to-emerald-500' },
-  { text: 'Gen AI', color: 'from-orange-500 to-red-500' },
+const highlights = [
+  { icon: Route, title: 'Guided Roadmaps', desc: 'Step-by-step learning paths' },
+  { icon: Terminal, title: 'Interactive Playground', desc: 'Run code with one click' },
+  { icon: Trophy, title: 'Contests & Practice', desc: 'Sharpen skills with problems' },
 ];
 
 export function Hero() {
   const navigate = useNavigate();
-  const [currentTermIndex, setCurrentTermIndex] = useState(0);
-  const [displayedText, setDisplayedText] = useState('');
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [charIndex, setCharIndex] = useState(0);
   const [isLoginDialogOpen, setIsLoginDialogOpen] = useState(false);
 
-  useEffect(() => {
-    const currentTerm = aiTerms[currentTermIndex].text;
-    const typingSpeed = isDeleting ? 50 : 100;
-    const pauseBeforeDelete = 2000;
-    const pauseBeforeType = 500;
-
-    if (!isDeleting && charIndex === currentTerm.length) {
-      // Finished typing, pause then start deleting
-      const timeout = setTimeout(() => setIsDeleting(true), pauseBeforeDelete);
-      return () => clearTimeout(timeout);
-    }
-
-    if (isDeleting && charIndex === 0) {
-      // Finished deleting, move to next term
-      setIsDeleting(false);
-      setCurrentTermIndex((prev) => (prev + 1) % aiTerms.length);
-      const timeout = setTimeout(() => setCharIndex(0), pauseBeforeType);
-      return () => clearTimeout(timeout);
-    }
-
-    // Type or delete character
-    const timeout = setTimeout(() => {
-      if (isDeleting) {
-        setDisplayedText(currentTerm.substring(0, charIndex - 1));
-        setCharIndex((prev) => prev - 1);
-      } else {
-        setDisplayedText(currentTerm.substring(0, charIndex + 1));
-        setCharIndex((prev) => prev + 1);
-      }
-    }, typingSpeed);
-
-    return () => clearTimeout(timeout);
-  }, [charIndex, isDeleting, currentTermIndex]);
-
   return (
-    <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900">
-      {/* Animated background elements */}
-      <div className="absolute inset-0 overflow-hidden">
+    <section style={{ background: 'var(--wa-bg)', borderBottom: '1px solid var(--wa-border)' }}>
+      <div className="mx-auto px-4" style={{ maxWidth: '880px', paddingTop: '64px', paddingBottom: '56px' }}>
         <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            rotate: [0, 180, 360],
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: "linear"
-          }}
-          className="absolute top-1/4 left-1/4 w-64 h-64 bg-blue-400/20 dark:bg-blue-600/10 rounded-full blur-3xl"
-        />
-        <motion.div
-          animate={{
-            scale: [1.2, 1, 1.2],
-            rotate: [360, 180, 0],
-          }}
-          transition={{
-            duration: 15,
-            repeat: Infinity,
-            ease: "linear"
-          }}
-          className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-400/20 dark:bg-purple-600/10 rounded-full blur-3xl"
-        />
-      </div>
-
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-4 lg:px-6 py-20 text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="space-y-6"
+          transition={{ duration: 0.4 }}
+          className="text-center"
         >
-          {/* Badge */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2 }}
-            className="inline-flex items-center space-x-2 px-4 py-2 mb-2 bg-white dark:bg-gray-800 rounded-full shadow-lg border border-gray-200 dark:border-gray-700"
+          <h1
+            style={{
+              fontFamily: 'var(--wa-font-sans)',
+              fontSize: '2.5rem',
+              fontWeight: 700,
+              lineHeight: 1.2,
+              color: 'var(--wa-text)',
+              textWrap: 'balance' as any,
+              margin: '0 0 16px',
+            }}
           >
-            <Sparkles className="w-4 h-4 text-yellow-500" />
-            <span className="text-sm text-gray-700 dark:text-gray-300">Learn from Industry Experts</span>
-          </motion.div>
+            Learn AI. Understand the Concepts. Build Real Systems.
+          </h1>
 
-          {/* Typing Effect Heading */}
-          <div className="space-y-4">
-            <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold text-gray-900 dark:text-white min-h-[1.2em]">
-              Master{' '}
-              <span className={`bg-gradient-to-r ${aiTerms[currentTermIndex].color} bg-clip-text text-transparent`}>
-                {displayedText}
-                <span className="animate-pulse">|</span>
-              </span>
-            </h1>
-          </div>
-
-          {/* Description */}
-          <p className="max-w-3xl mx-auto text-lg sm:text-xl text-gray-600 dark:text-gray-300 mb-1">
-            Your comprehensive platform to understand, learn, and practice Artificial Intelligence, 
-            Machine Learning, Deep Learning, and cutting-edge technologies like Generative AI and Agentic AI. 
-            From basics to advanced, we've got you covered.
+          <p
+            style={{
+              fontSize: '1.0625rem',
+              lineHeight: 1.7,
+              color: 'var(--wa-text-secondary)',
+              maxWidth: '640px',
+              margin: '0 auto 32px',
+            }}
+          >
+            Explore Artificial Intelligence through structured lessons, practical coding examples,
+            and hands-on projects — from foundational concepts to Agentic AI.
           </p>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-row items-center justify-center gap-4 pt-8 mb-12">
-            <Button 
-              size="sm" 
-              variant="outline" 
+          <div className="flex flex-row items-center justify-center" style={{ gap: '12px', marginBottom: '48px' }}>
+            <button className="wa-btn wa-btn-primary" style={{ height: '40px', padding: '0 20px' }} onClick={() => navigate(ROUTES.COURSES)}>
+              Start Learning
+              <ArrowRight className="w-4 h-4" />
+            </button>
+            <button
+              className="wa-btn wa-btn-secondary"
+              style={{ height: '40px', padding: '0 20px' }}
               onClick={() => setIsLoginDialogOpen(true)}
-              className="text-lg px-8 py-6 border-2"
             >
-              <LogIn className="mr-2 w-5 h-5" />
-              <span>Sign In</span>
-            </Button>
-            <Button 
-              size="sm" 
-              onClick={() => navigate(ROUTES.COURSES)}
-              className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-lg px-8 py-6"
-            >
-              <span>Start Learning</span>
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
+              <LogIn className="w-4 h-4" />
+              Sign In
+            </button>
           </div>
 
-          {/* Feature Row (below CTA) */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="mx-auto mt-8 mb-1 max-w-5xl"
+          <div
+            className="wa-card"
+            style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))' }}
           >
-            <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white/60 dark:bg-gray-900/60 backdrop-blur-md shadow-sm">
-              <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-gray-200 dark:divide-gray-800">
-                <div className="flex items-start gap-4 p-6">
-                  <div className="shrink-0 rounded-xl p-2 bg-gradient-to-br from-blue-500 to-purple-600 text-white">
-                    <Route className="w-5 h-5" />
-                  </div>
-                  <div className="text-left">
-                    <div className="font-semibold text-gray-900 dark:text-white">Guided Roadmaps</div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">Step-by-step learning paths</div>
-                  </div>
+            {highlights.map((h, i) => (
+              <div
+                key={h.title}
+                className="flex items-start text-left"
+                style={{
+                  gap: '12px',
+                  padding: '18px',
+                  borderLeft: i === 0 ? 'none' : '1px solid var(--wa-border)',
+                }}
+              >
+                <div
+                  className="flex items-center justify-center flex-shrink-0"
+                  style={{
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: 'var(--wa-radius-md)',
+                    background: 'var(--wa-accent-tint)',
+                    color: 'var(--wa-accent)',
+                  }}
+                >
+                  <h.icon className="w-4 h-4" />
                 </div>
-                <div className="flex items-start gap-4 p-6">
-                  <div className="shrink-0 rounded-xl p-2 bg-gradient-to-br from-blue-500 to-purple-600 text-white">
-                    <Terminal className="w-5 h-5" />
-                  </div>
-                  <div className="text-left">
-                    <div className="font-semibold text-gray-900 dark:text-white">Interactive Playground</div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">Run code with one click</div>
-                  </div>
-                </div>
-                <div className="flex items-start gap-4 p-6">
-                  <div className="shrink-0 rounded-xl p-2 bg-gradient-to-br from-blue-500 to-purple-600 text-white">
-                    <Trophy className="w-5 h-5" />
-                  </div>
-                  <div className="text-left">
-                    <div className="font-semibold text-gray-900 dark:text-white">Contests & Practice</div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">Sharpen skills with problems</div>
-                  </div>
+                <div>
+                  <div style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--wa-text)' }}>{h.title}</div>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--wa-text-secondary)' }}>{h.desc}</div>
                 </div>
               </div>
-            </div>
-          </motion.div>
-
-          {/* Stats */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-            className="grid grid-cols-3 gap-8 pt-12 max-w-2xl mx-auto"
-          >
-            <div className="text-center">
-              <div className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
-                50+
-              </div>
-              <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">Courses</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
-                200+
-              </div>
-              <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">Problems</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
-                1000+
-              </div>
-              <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">Learners</div>
-            </div>
-          </motion.div>
+            ))}
+          </div>
         </motion.div>
       </div>
       <LoginDialog open={isLoginDialogOpen} onOpenChange={setIsLoginDialogOpen} />

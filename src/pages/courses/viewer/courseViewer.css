@@ -1,12 +1,12 @@
-/* Hand-written styling for the course viewer: the chapter sidebar's active/hover
-   states, and all lesson-body typography (headings, paragraphs, lists, code,
-   blockquotes). Written as real CSS rather than Tailwind utility classes on
-   purpose — this app's CSS is a static, pre-built file (see
-   docs/book-1-codebase-explained/03-tooling-and-config.md §3.5), so any utility
-   class not already used elsewhere in the app (including most responsive `md:`/
-   `lg:` variants and many solid `bg-*-600` fills) silently does nothing. Plain
-   CSS here always works. Dark mode keys off the app's real `.dark` class on
-   <html> (see hooks/useDarkMode.ts), matching courseDiagrams.css. */
+/* Course viewer styling — chapter sidebar, lesson typography, code blocks.
+   Rewritten to use the global design tokens (src/styles/design-tokens.css):
+   restrained accent usage (a left border + light tint for the active chapter,
+   not a solid saturated-blue fill), subtle borders over heavy shadows, and a
+   professional technical-documentation reading experience. Written as plain
+   CSS rather than Tailwind utility classes for the same reliability reason
+   documented in design-tokens.css and CLAUDE.md's gotchas list — this file's
+   classes are guaranteed to render regardless of what's pre-built into
+   src/index.css. Dark mode keys off the app's real `.dark` class on <html>. */
 
 /* ---------- Sidebar label ---------- */
 
@@ -15,12 +15,31 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: var(--color-gray-400);
+  color: var(--wa-text-secondary);
   margin: 0 0 0.75rem;
-  padding: 0 0.75rem;
+  padding: 0 0.5rem;
 }
-.dark .cv-sidebar-label {
-  color: var(--color-gray-500);
+
+/* ---------- Sidebar search ---------- */
+
+.cv-search {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: var(--wa-font-sans);
+  font-size: 0.8rem;
+  padding: 0.45rem 0.65rem;
+  margin-bottom: 0.75rem;
+  border: 1px solid var(--wa-border);
+  border-radius: var(--wa-radius-md);
+  background: var(--wa-bg);
+  color: var(--wa-text);
+}
+.cv-search::placeholder {
+  color: var(--wa-text-secondary);
+}
+.cv-search:focus {
+  outline: 2px solid var(--wa-accent);
+  outline-offset: -1px;
 }
 
 /* ---------- Chapter index / sidebar nav ---------- */
@@ -31,155 +50,175 @@
   gap: 0.6rem;
   width: 100%;
   text-align: left;
-  padding: 0.55rem 0.75rem;
-  border-radius: 0.5rem;
-  font-size: 0.875rem;
-  line-height: 1.3;
-  color: var(--color-gray-700);
+  padding: 0.5rem 0.6rem;
+  border-radius: var(--wa-radius-sm);
+  border-left: 2px solid transparent;
+  font-size: 0.85rem;
+  line-height: 1.35;
+  color: var(--wa-text-secondary);
   background: transparent;
-  border: none;
+  border-top: none;
+  border-right: none;
+  border-bottom: none;
   cursor: pointer;
 }
-.dark .cv-nav-item {
-  color: var(--color-gray-300);
-}
 .cv-nav-item:hover:not(.cv-nav-item--active):not(:disabled) {
-  background: var(--color-gray-100);
-}
-.dark .cv-nav-item:hover:not(.cv-nav-item--active):not(:disabled) {
-  background: var(--color-gray-800);
+  background: var(--wa-bg);
+  color: var(--wa-text);
 }
 .cv-nav-item--active {
-  background: var(--color-blue-500);
-  color: var(--color-white);
+  background: var(--wa-accent-tint);
+  border-left-color: var(--wa-accent);
+  color: var(--wa-accent);
   font-weight: 600;
 }
 .cv-nav-item:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
+.cv-nav-item:focus-visible {
+  outline: 2px solid var(--wa-accent);
+  outline-offset: 1px;
+}
 .cv-nav-num {
   flex-shrink: 0;
   width: 1.25rem;
-  font-size: 0.75rem;
-  opacity: 0.7;
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.65;
 }
 .cv-nav-title {
   flex: 1;
+}
+.cv-nav-check {
+  flex-shrink: 0;
+  color: var(--wa-success);
+}
+.cv-nav-lock {
+  flex-shrink: 0;
+  color: var(--wa-text-secondary);
 }
 
 /* ---------- Lesson content typography ---------- */
 
 .lesson-content {
-  font-size: 0.975rem;
-  line-height: 1.75;
-  color: var(--color-gray-700);
-}
-.dark .lesson-content {
-  color: var(--color-gray-300);
+  font-family: var(--wa-font-sans);
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--wa-text);
 }
 
 .lesson-content h2 {
-  font-size: 1.375rem;
+  font-size: 1.3rem;
   font-weight: 700;
-  color: var(--color-gray-900);
-  margin: 2.25rem 0 0.9rem;
+  color: var(--wa-text);
+  margin: 2.1rem 0 0.85rem;
   padding-bottom: 0.5rem;
-  border-bottom: 2px solid var(--color-blue-100);
-}
-.dark .lesson-content h2 {
-  color: var(--color-white);
-  border-bottom-color: var(--color-gray-700);
+  border-bottom: 1px solid var(--wa-border);
 }
 .lesson-content h2:first-child {
   margin-top: 0;
 }
 
 .lesson-content h3 {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--color-blue-700, var(--color-blue-600));
-  margin: 1.75rem 0 0.6rem;
-}
-.dark .lesson-content h3 {
-  color: var(--color-blue-400);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--wa-text);
+  margin: 1.6rem 0 0.55rem;
 }
 
 .lesson-content p {
-  margin: 0 0 1.1rem;
+  margin: 0 0 1.05rem;
+  color: var(--wa-text);
 }
 
 .lesson-content ul,
 .lesson-content ol {
-  margin: 0 0 1.2rem;
-  padding-left: 1.4rem;
+  margin: 0 0 1.1rem;
+  padding-left: 1.35rem;
 }
 .lesson-content li {
-  margin-bottom: 0.45rem;
+  margin-bottom: 0.4rem;
 }
 .lesson-content li::marker {
-  color: var(--color-blue-500);
+  color: var(--wa-accent);
 }
 
 .lesson-content strong {
-  color: var(--color-gray-900);
-  font-weight: 700;
-}
-.dark .lesson-content strong {
-  color: var(--color-white);
+  color: var(--wa-text);
+  font-weight: 600;
 }
 
 .lesson-content a {
-  color: var(--color-blue-600);
+  color: var(--wa-accent);
   text-decoration: underline;
   text-underline-offset: 2px;
 }
-.dark .lesson-content a {
-  color: var(--color-blue-400);
-}
 
 .lesson-content code {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-family: var(--wa-font-mono);
   font-size: 0.85em;
-  background: var(--color-blue-50);
-  color: var(--color-blue-700, var(--color-blue-600));
+  background: var(--wa-accent-tint);
+  color: var(--wa-accent);
   padding: 0.15em 0.4em;
-  border-radius: 0.3em;
-}
-.dark .lesson-content code {
-  background: rgba(59, 130, 246, 0.12);
-  color: var(--color-blue-400);
+  border-radius: var(--wa-radius-sm);
 }
 
+/* ---------- Code blocks ---------- */
+
+.cv-code-block {
+  margin: 1.3rem 0;
+  border-radius: var(--wa-radius-md);
+  overflow: hidden;
+  border: 1px solid var(--wa-border);
+}
 .lesson-content pre {
-  background: var(--color-gray-900);
-  color: var(--color-white);
-  padding: 1rem 1.15rem;
-  border-radius: 0.6rem;
+  background: var(--wa-code-bg);
+  color: var(--wa-code-text);
+  padding: 1rem 1.1rem;
+  margin: 0;
   overflow-x: auto;
-  margin: 1.4rem 0;
   font-size: 0.82rem;
-  line-height: 1.6;
+  line-height: 1.65;
 }
 .lesson-content pre code {
   background: none;
   color: inherit;
   padding: 0;
   font-size: inherit;
+  border-radius: 0;
 }
 
-.lesson-content blockquote {
-  margin: 1.5rem 0;
-  padding: 0.9rem 1.2rem;
-  border-left: 4px solid var(--color-blue-500);
-  background: var(--color-blue-50);
-  border-radius: 0 0.5rem 0.5rem 0;
-  font-size: 0.92rem;
-  color: var(--color-gray-700);
+.cv-code-copy-btn {
+  position: absolute;
+  top: 0.55rem;
+  right: 0.55rem;
+  font-family: var(--wa-font-sans);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.3rem 0.65rem;
+  border-radius: var(--wa-radius-sm);
+  border: 1px solid #454C56;
+  background: #21262D;
+  color: #C9D1D9;
+  cursor: pointer;
+  line-height: 1.2;
 }
-.dark .lesson-content blockquote {
-  background: rgba(59, 130, 246, 0.1);
-  color: var(--color-gray-300);
+.cv-code-copy-btn:hover {
+  background: #30363D;
+  border-color: #545D68;
+}
+
+/* ---------- Blockquote ---------- */
+
+.lesson-content blockquote {
+  margin: 1.4rem 0;
+  padding: 0.8rem 1.1rem;
+  border-left: 3px solid var(--wa-accent);
+  background: var(--wa-accent-tint);
+  border-radius: 0 var(--wa-radius-sm) var(--wa-radius-sm) 0;
+  font-size: 0.92rem;
+  color: var(--wa-text);
 }
 .lesson-content blockquote p {
   margin: 0;
