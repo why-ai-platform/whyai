@@ -1,0 +1,181 @@
+/* Lightweight HTML/CSS diagram building blocks used inside course lesson content
+   (injected via dangerouslySetInnerHTML — see CourseViewer.tsx and courseContent.ts).
+   No stock photography: these are drawn with plain boxes, flex/grid layout, and
+   the shared --wa-* design tokens (src/styles/design-tokens.css). Those tokens
+   already redefine themselves under the app's `.dark` class, so — unlike the
+   first version of this file — these rules don't need a separate `.dark
+   .cd-...` override for every line; the token does the switching. */
+
+.cd-diagram {
+  margin: 1.6rem 0;
+  padding: 1.25rem;
+  border-radius: var(--wa-radius-lg);
+  background: var(--wa-bg);
+  border: 1px solid var(--wa-border);
+}
+
+.cd-flow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.cd-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-width: 9rem;
+  padding: 0.85rem 1rem;
+  border-radius: var(--wa-radius-md);
+  background: var(--wa-surface);
+  border: 1px solid var(--wa-border);
+}
+
+.cd-box-title {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--wa-accent);
+  margin-bottom: 0.2rem;
+}
+
+.cd-box-sub {
+  font-size: 0.76rem;
+  color: var(--wa-text-secondary);
+}
+
+.cd-arrow {
+  font-size: 1.3rem;
+  line-height: 1;
+  color: var(--wa-text-secondary);
+  flex-shrink: 0;
+}
+
+.cd-loop-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.cd-loop-back {
+  font-size: 0.78rem;
+  color: var(--wa-text-secondary);
+  text-align: center;
+}
+
+.cd-split {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 1rem;
+}
+@media (max-width: 480px) {
+  .cd-split {
+    grid-template-columns: 1fr;
+  }
+}
+
+.cd-split-box {
+  padding: 1.1rem;
+  border-radius: var(--wa-radius-md);
+  text-align: center;
+  background: var(--wa-surface);
+  border: 1px solid var(--wa-border);
+}
+
+.cd-split-emoji {
+  font-size: 1.75rem;
+  display: block;
+  margin-bottom: 0.35rem;
+}
+.cd-split-label {
+  font-weight: 600;
+  color: var(--wa-text);
+}
+.cd-split-plus {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--wa-text-secondary);
+}
+
+.cd-compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+@media (max-width: 560px) {
+  .cd-compare {
+    grid-template-columns: 1fr;
+  }
+}
+.cd-compare-col {
+  padding: 1rem 1.1rem;
+  border-radius: var(--wa-radius-md);
+  background: var(--wa-surface);
+  border: 1px solid var(--wa-border);
+}
+.cd-compare-col h4 {
+  margin: 0 0 0.5rem;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--wa-accent);
+}
+.cd-compare-col ol,
+.cd-compare-col ul {
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.85rem;
+  color: var(--wa-text-secondary);
+}
+
+.cd-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 0.7rem;
+}
+.cd-tile {
+  padding: 0.95rem;
+  border-radius: var(--wa-radius-md);
+  background: var(--wa-surface);
+  border: 1px solid var(--wa-border);
+  text-align: center;
+}
+.cd-tile-emoji {
+  font-size: 1.4rem;
+  display: block;
+  margin-bottom: 0.3rem;
+}
+.cd-tile-title {
+  font-weight: 600;
+  font-size: 0.82rem;
+  color: var(--wa-text);
+}
+.cd-tile-sub {
+  font-size: 0.7rem;
+  color: var(--wa-text-secondary);
+  margin-top: 0.15rem;
+}
+
+.cd-callout {
+  display: flex;
+  gap: 0.7rem;
+  align-items: flex-start;
+  padding: 0.9rem 1.1rem;
+  border-radius: var(--wa-radius-md);
+  background: var(--wa-warning-tint);
+  border-left: 3px solid var(--wa-warning);
+}
+.cd-callout-icon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+.cd-callout p {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--wa-text);
+}

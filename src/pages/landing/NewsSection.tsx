@@ -1,10 +1,7 @@
-import React from 'react';
 import { motion } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
-import { Badge } from '../../components/ui/badge';
-import { Button } from '../../components/ui/button';
-import { MessageSquare, TrendingUp, Calendar, ExternalLink } from 'lucide-react';
+import { Card } from '../../components/ui/card';
+import { MessageSquare, TrendingUp, Calendar, ArrowRight } from 'lucide-react';
 import { ImageWithFallback } from '../../components/figma/ImageWithFallback';
 import { ROUTES } from '../../constants';
 
@@ -63,112 +60,99 @@ export function NewsSection() {
   };
 
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-900">
-      <div className="max-w-7xl mx-auto">
+    <section style={{ background: 'var(--wa-surface)' }} className="py-16 px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto" style={{ maxWidth: '1080px' }}>
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-12"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="text-center"
+          style={{ marginBottom: '32px' }}
         >
-          <div className="inline-flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 rounded-full mb-4">
-            <TrendingUp className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-            <span className="text-sm text-blue-600 dark:text-blue-400">What's Trending</span>
+          <div className="wa-pill" style={{ marginBottom: '12px' }}>
+            <TrendingUp className="w-3.5 h-3.5" />
+            What's Trending
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+          <h2 style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--wa-text)', margin: '0 0 10px' }}>
             Latest AI News & Updates
           </h2>
-          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Stay updated with the latest breakthroughs, research, and innovations in the AI world
+          <p style={{ fontSize: '0.975rem', color: 'var(--wa-text-secondary)', maxWidth: '560px', margin: '0 auto' }}>
+            Stay updated with breakthroughs, research, and innovations in AI.
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: '20px' }}>
           {newsItems.map((item, index) => (
             <motion.div
               key={item.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: index * 0.05 }}
             >
               <Card
-                className="group hover:shadow-xl transition-shadow duration-300 overflow-hidden h-full cursor-pointer"
+                className="wa-card cursor-pointer"
+                style={{ overflow: 'hidden', height: '100%' }}
                 onClick={() => handleNewsClick(item.id)}
               >
-                <div className="relative overflow-hidden h-48">
-                  <ImageWithFallback
-                    src={item.image}
-                    alt={item.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                  />
+                <div style={{ position: 'relative', height: '180px' }}>
+                  <ImageWithFallback src={item.image} alt={item.title} className="w-full h-full object-cover" />
                   {item.trending && (
-                    <Badge className="absolute top-4 right-4 bg-red-500 hover:bg-red-600">
-                      <TrendingUp className="w-3 h-3 mr-1" />
+                    <span
+                      className="wa-pill"
+                      style={{ position: 'absolute', top: '12px', right: '12px', background: 'var(--wa-surface)', border: '1px solid var(--wa-border)' }}
+                    >
+                      <TrendingUp className="w-3 h-3" />
                       Trending
-                    </Badge>
+                    </span>
                   )}
                 </div>
-                <CardHeader>
-                  <div className="flex items-center justify-between mb-2">
-                    <Badge variant="outline">{item.category}</Badge>
-                    <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
-                      <Calendar className="w-4 h-4 mr-1" />
+                <div style={{ padding: '18px' }}>
+                  <div className="flex items-center justify-between" style={{ marginBottom: '10px' }}>
+                    <span
+                      style={{
+                        fontSize: '0.72rem',
+                        fontWeight: 600,
+                        color: 'var(--wa-text-secondary)',
+                        border: '1px solid var(--wa-border)',
+                        borderRadius: 'var(--wa-radius-sm)',
+                        padding: '0.15rem 0.5rem',
+                      }}
+                    >
+                      {item.category}
+                    </span>
+                    <div className="flex items-center" style={{ gap: '4px', fontSize: '0.78rem', color: 'var(--wa-text-secondary)' }}>
+                      <Calendar className="w-3.5 h-3.5" />
                       {item.date}
                     </div>
                   </div>
-                  <CardTitle className="group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                  <h3 style={{ fontSize: '1.02rem', fontWeight: 600, color: 'var(--wa-text)', margin: '0 0 8px', lineHeight: 1.4 }}>
                     {item.title}
-                  </CardTitle>
-                  <CardDescription>{item.description}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center justify-between">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="text-gray-600 dark:text-gray-400"
-                      onClick={(e: React.MouseEvent) => e.stopPropagation()}
-                    >
-                      <MessageSquare className="w-4 h-4 mr-2" />
-                      {item.comments} Comments
-                    </Button>
-                    <Button
-                      variant="link"
-                      size="sm"
-                      onClick={(e: React.MouseEvent) => {
-                        e.stopPropagation();
-                        handleNewsClick(item.id);
-                      }}
-                    >
-                      Read More
-                      <ExternalLink className="w-4 h-4 ml-1" />
-                    </Button>
+                  </h3>
+                  <p style={{ fontSize: '0.85rem', color: 'var(--wa-text-secondary)', lineHeight: 1.6, margin: '0 0 14px' }}>
+                    {item.description}
+                  </p>
+                  <div className="flex items-center justify-between" style={{ fontSize: '0.8rem', color: 'var(--wa-text-secondary)' }}>
+                    <span className="flex items-center" style={{ gap: '4px' }}>
+                      <MessageSquare className="w-3.5 h-3.5" />
+                      {item.comments} comments
+                    </span>
+                    <span className="flex items-center" style={{ gap: '4px', color: 'var(--wa-accent)', fontWeight: 600 }}>
+                      Read more
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </span>
                   </div>
-                </CardContent>
+                </div>
               </Card>
             </motion.div>
           ))}
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="text-center mt-12"
-        >
-          <Button
-            size="lg"
-            variant="outline"
-            className="border-2"
-            onClick={handleViewAllClick}
-          >
+        <div className="text-center" style={{ marginTop: '32px' }}>
+          <button className="wa-btn wa-btn-secondary" onClick={handleViewAllClick}>
             View All News
-            <ExternalLink className="ml-2 w-4 h-4" />
-          </Button>
-        </motion.div>
+            <ArrowRight className="w-4 h-4" />
+          </button>
+        </div>
       </div>
     </section>
   );

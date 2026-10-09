@@ -1,0 +1,171 @@
+/* WhyAI design tokens — professional technical-education palette, replacing the
+   generic AI-startup gradient aesthetic. Loaded globally (see main.tsx), after
+   index.css so these rules win the cascade. Written as plain CSS custom
+   properties, not Tailwind utility classes, because src/index.css is a static
+   pre-built file that silently drops unknown utility classes (see
+   docs/book-1-codebase-explained/19-known-issues-and-dead-code.md and
+   CLAUDE.md's gotchas list) — custom properties + hand-written rules are the
+   only approach guaranteed to actually render. Dark mode keys off the app's
+   real `.dark` class on <html> (hooks/useDarkMode.ts), same as every other
+   custom stylesheet in this project.
+
+   Usage in components: prefer the small set of reusable classes defined at the
+   bottom of this file (.wa-btn, .wa-btn-primary, .wa-card, .wa-pill, etc.) or
+   reference a token directly via inline style, e.g. style={{ color: 'var(--wa-text)' }}. */
+
+:root {
+  /* Surfaces */
+  --wa-bg: #F5F6F8;
+  --wa-surface: #FFFFFF;
+  --wa-sidebar: #FFFFFF;
+
+  /* Text */
+  --wa-text: #202733;
+  --wa-text-secondary: #626B78;
+
+  /* Structure */
+  --wa-border: #E1E5EB;
+
+  /* Interaction */
+  --wa-accent: #2563A6;
+  --wa-accent-hover: #1D4F86;
+  --wa-accent-tint: #EAF1F9; /* light accent wash, for active/selected backgrounds */
+
+  /* Semantic */
+  --wa-success: #238451;
+  --wa-success-tint: #E7F5EC;
+  --wa-warning: #A86B16;
+  --wa-warning-tint: #FBF1E3;
+  --wa-error: #C43D43;
+  --wa-error-tint: #FBEAEB;
+
+  /* Code */
+  --wa-code-bg: #171B22;
+  --wa-code-text: #E7ECF3;
+
+  /* Type */
+  --wa-font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --wa-font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Spacing scale (4px base) and radii — used where a Tailwind class isn't verified-safe */
+  --wa-radius-sm: 4px;
+  --wa-radius-md: 6px;
+  --wa-radius-lg: 10px;
+}
+
+.dark {
+  /* Neutral charcoal, not navy-tinted — the family GitHub/VS Code/Linear
+     actually use. A dark theme with a blue/purple tint on the background
+     itself (the previous #111720/#171F2B here) is the single most common
+     "this looks AI-generated" tell in dark-mode UI; true neutral grays read
+     as considered and professional instead. */
+  --wa-bg: #0D1117;
+  --wa-surface: #161B22;
+  --wa-sidebar: #0D1117;
+
+  --wa-text: #E6EDF3;
+  --wa-text-secondary: #8B949E;
+
+  --wa-border: #30363D;
+
+  --wa-accent: #4493F8;
+  --wa-accent-hover: #6CB0FF;
+  --wa-accent-tint: rgba(68, 147, 248, 0.12);
+
+  --wa-success: #3FB950;
+  --wa-success-tint: rgba(63, 185, 80, 0.12);
+  --wa-warning: #D29922;
+  --wa-warning-tint: rgba(210, 153, 34, 0.12);
+  --wa-error: #F85149;
+  --wa-error-tint: rgba(248, 81, 73, 0.12);
+
+  --wa-code-bg: #010409;
+  --wa-code-text: #E6EDF3;
+}
+
+/* ---------- Base type override ---------- */
+
+body {
+  font-family: var(--wa-font-sans);
+}
+
+/* ---------- Reusable primitives ---------- */
+
+.wa-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  height: 36px;
+  padding: 0 1rem;
+  font-family: var(--wa-font-sans);
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: var(--wa-radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+.wa-btn-primary {
+  background: var(--wa-accent);
+  color: #FFFFFF;
+}
+.wa-btn-primary:hover {
+  background: var(--wa-accent-hover);
+}
+.wa-btn-secondary {
+  background: transparent;
+  color: var(--wa-text);
+  border-color: var(--wa-border);
+}
+.wa-btn-secondary:hover {
+  background: var(--wa-bg);
+}
+
+.wa-card {
+  background: var(--wa-surface);
+  border: 1px solid var(--wa-border);
+  border-radius: var(--wa-radius-lg);
+}
+
+.wa-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.2rem 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 999px;
+  background: var(--wa-accent-tint);
+  color: var(--wa-accent);
+}
+
+/* ---------- Callout boxes (note / warning / example) for lesson content ---------- */
+
+.wa-callout {
+  display: flex;
+  gap: 0.7rem;
+  align-items: flex-start;
+  padding: 0.85rem 1.05rem;
+  border-radius: var(--wa-radius-md);
+  border: 1px solid var(--wa-border);
+  border-left-width: 3px;
+  margin: 1.4rem 0;
+  font-size: 0.9rem;
+}
+.wa-callout p {
+  margin: 0;
+}
+.wa-callout--note {
+  border-left-color: var(--wa-accent);
+  background: var(--wa-accent-tint);
+}
+.wa-callout--warning {
+  border-left-color: var(--wa-warning);
+  background: var(--wa-warning-tint);
+}
+.wa-callout--example {
+  border-left-color: var(--wa-success);
+  background: var(--wa-success-tint);
+}
