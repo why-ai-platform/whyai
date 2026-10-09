@@ -112,11 +112,11 @@ const courses: Course[] = [
     title: 'Agentic AI',
     icon: Bot,
     level: 'Advanced',
-    duration: '5 weeks',
-    lessons: 25,
+    duration: '3 weeks',
+    lessons: 12,
     progress: 0,
-    description: 'Build autonomous AI agents that can plan, reason, and take actions.',
-    topics: ['Agent Architecture', 'Planning', 'Tool Use', 'Multi-Agent Systems', 'LangChain'],
+    description: 'Build autonomous AI agents that can plan, reason, and take actions — from core concepts to shipping your first working agent.',
+    topics: ['Agent Architecture', 'Planning & Reasoning', 'Tool Use', 'Memory', 'Multi-Agent Systems', 'Build Your First Agent'],
   },
   {
     id: '8',
@@ -246,9 +246,14 @@ export function CoursesPage() {
 
                 <Button
                   onClick={() => navigate(ROUTES.COURSE_VIEWER.replace(':id', course.id))}
-                  className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
+                  disabled={course.locked}
+                  className={
+                    course.locked
+                      ? 'w-full cursor-not-allowed opacity-60'
+                      : 'w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700'
+                  }
                 >
-                  {course.progress > 0 ? 'Continue' : 'Start Course'}
+                  {course.locked ? 'Coming Soon' : course.progress > 0 ? 'Continue' : 'Start Course'}
                   <ChevronRight className="ml-2 w-4 h-4" />
                 </Button>
               </Card>

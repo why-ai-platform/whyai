@@ -1,0 +1,655 @@
+<title>WhyAI Blueprint</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root{
+    --bg:#F6F4EE;
+    --bg-grid:rgba(29,78,137,0.07);
+    --surface:#FFFFFF;
+    --surface-2:#FBFAF5;
+    --border:#CFC8B4;
+    --ink:#1D4E89;
+    --ink-soft:#4B76A8;
+    --ink-faint:#AFC3DB;
+    --text:#20242B;
+    --text-muted:#5B6472;
+    --ok:#2E7D55;
+    --ok-bg:rgba(46,125,85,0.10);
+    --warn:#B5732A;
+    --warn-bg:rgba(181,115,42,0.11);
+    --radius:3px;
+    --sans:'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+    --mono:'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0D131B;
+      --bg-grid:rgba(111,211,232,0.08);
+      --surface:#121926;
+      --surface-2:#0F1520;
+      --border:#273347;
+      --ink:#6FD3E8;
+      --ink-soft:#8FE1F0;
+      --ink-faint:#2E4A5E;
+      --text:#E7EAF0;
+      --text-muted:#8B96A8;
+      --ok:#5FD38A;
+      --ok-bg:rgba(95,211,138,0.12);
+      --warn:#E3A765;
+      --warn-bg:rgba(227,167,101,0.14);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0D131B;
+    --bg-grid:rgba(111,211,232,0.08);
+    --surface:#121926;
+    --surface-2:#0F1520;
+    --border:#273347;
+    --ink:#6FD3E8;
+    --ink-soft:#8FE1F0;
+    --ink-faint:#2E4A5E;
+    --text:#E7EAF0;
+    --text-muted:#8B96A8;
+    --ok:#5FD38A;
+    --ok-bg:rgba(95,211,138,0.12);
+    --warn:#E3A765;
+    --warn-bg:rgba(227,167,101,0.14);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    background-image:
+      repeating-linear-gradient(0deg, var(--bg-grid) 0 1px, transparent 1px 28px),
+      repeating-linear-gradient(90deg, var(--bg-grid) 0 1px, transparent 1px 28px);
+    color:var(--text);
+    font-family:var(--sans);
+  }
+  .sheet-wrap{
+    max-width:1100px;
+    margin:0 auto;
+    padding-inline:20px;
+    padding-block:28px 60px;
+  }
+
+  /* ---- title block (drafting-sheet header) ---- */
+  .titleblock{
+    border:1.5px solid var(--ink);
+    border-radius:var(--radius);
+    background:var(--surface);
+    padding:18px 22px;
+    display:grid;
+    grid-template-columns:1fr auto;
+    gap:10px 24px;
+    margin-bottom:28px;
+  }
+  .titleblock h1{
+    margin:0;
+    font-size:1.6rem;
+    font-weight:700;
+    letter-spacing:-0.01em;
+    text-wrap:balance;
+    color:var(--ink);
+  }
+  .titleblock .sub{
+    margin:4px 0 0;
+    color:var(--text-muted);
+    font-size:0.95rem;
+    max-width:62ch;
+  }
+  .meta{
+    font-family:var(--mono);
+    font-size:0.72rem;
+    color:var(--text-muted);
+    text-align:right;
+    line-height:1.6;
+    white-space:nowrap;
+  }
+  .meta b{color:var(--ink); font-weight:600;}
+
+  /* ---- legend ---- */
+  .legend{
+    display:flex;
+    flex-wrap:wrap;
+    gap:18px;
+    align-items:center;
+    border:1px dashed var(--border);
+    border-radius:var(--radius);
+    padding:10px 16px;
+    margin-bottom:36px;
+    background:var(--surface-2);
+    font-size:0.8rem;
+    color:var(--text-muted);
+  }
+  .legend b{color:var(--text); font-weight:600;}
+  .legend .chip{display:inline-flex; align-items:center; gap:6px;}
+  .legend .swatch{width:13px; height:13px; border-radius:2px; display:inline-block; border:1.3px solid currentColor;}
+
+  /* ---- sheet (one diagram + caption + footer) ---- */
+  .sheet{ margin-bottom:56px; }
+  .sheet-head{
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+    margin-bottom:4px;
+  }
+  .sheet-num{
+    font-family:var(--mono);
+    font-size:0.75rem;
+    color:var(--ink);
+    border:1px solid var(--ink);
+    border-radius:2px;
+    padding:1px 7px;
+  }
+  .sheet-head h2{
+    margin:0;
+    font-size:1.25rem;
+    font-weight:600;
+    text-wrap:balance;
+  }
+  .sheet p.lede{
+    margin:6px 0 18px;
+    color:var(--text-muted);
+    max-width:72ch;
+    font-size:0.95rem;
+  }
+  figure{ margin:0; }
+  .diagram-frame{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:14px;
+    overflow-x:auto;
+  }
+  svg{ display:block; max-width:100%; height:auto; }
+  figcaption{
+    font-family:var(--mono);
+    font-size:0.74rem;
+    color:var(--text-muted);
+    margin-top:8px;
+    padding-left:2px;
+  }
+  .sheet-footer{
+    display:flex;
+    justify-content:space-between;
+    font-family:var(--mono);
+    font-size:0.68rem;
+    color:var(--text-muted);
+    border-top:1px solid var(--border);
+    margin-top:10px;
+    padding-top:6px;
+  }
+  .sheet-footer b{color:var(--ink);}
+
+  /* svg text helpers */
+  .box-title{ font-family:var(--mono); font-weight:600; font-size:12.5px; }
+  .box-field{ font-family:var(--mono); font-size:10.5px; }
+  .box-caption{ font-family:var(--sans); font-size:10px; }
+  .edge-label{ font-family:var(--mono); font-size:9.5px; }
+  .stamp{ font-family:var(--sans); font-weight:600; font-size:10px; letter-spacing:0.02em; }
+  .cap-label{ font-family:var(--sans); font-weight:600; font-size:10.5px; letter-spacing:0.08em; }
+
+  footer.colophon{
+    font-size:0.82rem;
+    color:var(--text-muted);
+    border-top:1px dashed var(--border);
+    padding-top:18px;
+    max-width:72ch;
+  }
+  footer.colophon a{ color:var(--ink); text-decoration:none; border-bottom:1px dotted var(--ink-faint); }
+
+  @media (max-width:560px){
+    .titleblock{ grid-template-columns:1fr; }
+    .meta{ text-align:left; }
+  }
+</style>
+
+<div class="sheet-wrap">
+
+  <div class="titleblock">
+    <div>
+      <h1>WhyAI — System &amp; Class Blueprint</h1>
+      <p class="sub">High-level system architecture and class-level data/component relationships for the codebase <em>as it exists today</em> — a frontend-only React SPA, no backend yet. Companion to the written books in <code style="font-family:var(--mono)">docs/book-1-codebase-explained/</code>.</p>
+    </div>
+    <div class="meta">
+      DWG&nbsp;NO&nbsp;<b>WHYAI-ARCH-01</b><br/>
+      SCALE&nbsp;<b>high-level</b><br/>
+      REV&nbsp;<b>A</b> — 2026-10-09<br/>
+      STATUS&nbsp;<b>current state</b>
+    </div>
+  </div>
+
+  <div class="legend">
+    <span class="chip"><span class="swatch" style="color:var(--ink); background:var(--surface);"></span><b>Blue</b>&nbsp;— structural (exists, wired up, runs today)</span>
+    <span class="chip"><span class="swatch" style="color:var(--ok); background:var(--ok-bg);"></span><b>Green</b>&nbsp;— confirmed live / actually rendered</span>
+    <span class="chip"><span class="swatch" style="color:var(--warn); background:var(--warn-bg);"></span><b>Amber</b>&nbsp;— declared but orphaned, unused, or not yet built</span>
+    <span class="chip">⇢ <b>dashed diagonal</b> = soft reference, not a real foreign key (no database exists yet)</span>
+  </div>
+
+  <!-- ===================== SHEET A ===================== -->
+  <section class="sheet">
+    <div class="sheet-head"><span class="sheet-num">SHEET A</span><h2>High-Level System Architecture — Current State</h2></div>
+    <p class="lede">Everything inside the dashed browser boundary is the only place code actually runs today. There is no server, no database, no auth service, no payment gateway — the four amber boxes on the right are where the roadmap plans to add them.</p>
+    <figure class="diagram-frame">
+      <svg viewBox="0 0 1040 610" role="img" aria-label="WhyAI today is a static SPA: a browser downloads index.html and a JS bundle from Vercel's CDN, keeps two small localStorage/sessionStorage values, and hotlinks images from Unsplash. There is no backend server, database, auth server, or payment gateway yet.">
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10" fill="none" stroke="var(--ink-soft)" stroke-width="1.6"/>
+          </marker>
+          <marker id="arrow-warn" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10" fill="none" stroke="var(--warn)" stroke-width="1.6"/>
+          </marker>
+        </defs>
+
+        <!-- browser boundary -->
+        <rect x="40" y="40" width="560" height="430" rx="4" fill="none" stroke="var(--ink)" stroke-width="1.4" stroke-dasharray="7 5"/>
+        <text x="58" y="64" class="cap-label" fill="var(--ink)">VISITOR'S BROWSER</text>
+
+        <!-- index.html -->
+        <rect x="64" y="84" width="230" height="56" rx="3" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.3"/>
+        <text x="80" y="106" class="box-title" fill="var(--ink)">index.html</text>
+        <text x="80" y="122" class="box-caption" fill="var(--text-muted)">served once · Ch.3 §3.3</text>
+
+        <!-- react bundle -->
+        <rect x="64" y="158" width="512" height="100" rx="3" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.3"/>
+        <text x="80" y="180" class="box-title" fill="var(--ink)">React bundle (Ch.4–5)</text>
+        <text x="80" y="196" class="box-field" fill="var(--text)">main.tsx → App.tsx → Router → one Page</text>
+        <line x1="80" y1="206" x2="552" y2="206" stroke="var(--border)" stroke-width="1"/>
+        <text x="80" y="222" class="box-field" fill="var(--text-muted)">AuthProvider (mock, Ch.6) · useDarkMode (Ch.7)</text>
+        <text x="80" y="238" class="box-field" fill="var(--text-muted)">Navbar / Footer + exactly one routed Page (Ch.8, 10–15)</text>
+
+        <!-- localStorage -->
+        <rect x="64" y="284" width="240" height="78" rx="3" fill="var(--ok-bg)" stroke="var(--ok)" stroke-width="1.3"/>
+        <text x="80" y="306" class="box-title" fill="var(--ok)">localStorage</text>
+        <text x="80" y="322" class="box-field" fill="var(--text)">darkMode: boolean</text>
+        <text x="80" y="336" class="box-field" fill="var(--text)">course-&lt;id&gt;-completed: string[]</text>
+        <text x="80" y="350" class="box-caption" fill="var(--text-muted)">the only real persistence · Ch.7, Ch.11 §11.2</text>
+
+        <!-- sessionStorage -->
+        <rect x="336" y="284" width="240" height="78" rx="3" fill="var(--surface-2)" stroke="var(--ink)" stroke-width="1.3"/>
+        <text x="352" y="306" class="box-title" fill="var(--ink)">sessionStorage</text>
+        <text x="352" y="322" class="box-field" fill="var(--text)">activeTab: 'playground'</text>
+        <text x="352" y="350" class="box-caption" fill="var(--text-muted)">breadcrumb → Courses tab handoff · Ch.8 §8.3</text>
+
+        <!-- in-memory state note -->
+        <rect x="64" y="394" width="512" height="56" rx="3" fill="var(--warn-bg)" stroke="var(--warn)" stroke-width="1.2" stroke-dasharray="4 3"/>
+        <text x="80" y="416" class="box-title" fill="var(--warn)">everything else: in-memory only</text>
+        <text x="80" y="432" class="box-field" fill="var(--text)">who's logged in · courses/problems/news data · all UI state — gone on refresh</text>
+
+        <!-- arrow bundle -> localStorage/sessionStorage (already touching, skip) -->
+        <!-- arrow browser -> vercel -->
+        <line x1="320" y1="470" x2="320" y2="520" stroke="var(--ink)" stroke-width="1.4" marker-end="url(#arrow)"/>
+        <text x="332" y="500" class="edge-label" fill="var(--ink-soft)">HTTPS GET any path</text>
+
+        <!-- vercel box -->
+        <rect x="64" y="520" width="512" height="70" rx="3" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.4"/>
+        <text x="80" y="542" class="box-title" fill="var(--ink)">VERCEL — static hosting + global CDN</text>
+        <text x="80" y="558" class="box-field" fill="var(--text)">dist/ (output of `npm run build`)</text>
+        <text x="80" y="574" class="box-caption" fill="var(--text-muted)">rewrite "/(.*)" → index.html · Ch.3 §3.4, Ch.6 §6.2</text>
+
+        <!-- unsplash external -->
+        <rect x="660" y="84" width="330" height="80" rx="3" fill="var(--surface-2)" stroke="var(--ink-soft)" stroke-width="1.2" stroke-dasharray="4 3"/>
+        <text x="676" y="108" class="box-title" fill="var(--ink-soft)">Unsplash (external host)</text>
+        <text x="676" y="124" class="box-field" fill="var(--text)">hotlinked &lt;img&gt; src=...</text>
+        <text x="676" y="140" class="box-caption" fill="var(--text-muted)">ImageWithFallback catches 404s · Ch.8 §8.4</text>
+        <line x1="660" y1="124" x2="576" y2="200" stroke="var(--ink-soft)" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
+
+        <!-- amber ghost boxes: not yet built -->
+        <text x="660" y="230" class="cap-label" fill="var(--warn)">NOT YET BUILT — docs/ROADMAP.md</text>
+
+        <rect x="660" y="248" width="150" height="62" rx="3" fill="none" stroke="var(--warn)" stroke-width="1.2" stroke-dasharray="5 4"/>
+        <text x="672" y="272" class="box-title" fill="var(--warn)">Backend API</text>
+        <text x="672" y="288" class="box-caption" fill="var(--text-muted)">serverless fn · Phase 6</text>
+
+        <rect x="840" y="248" width="150" height="62" rx="3" fill="none" stroke="var(--warn)" stroke-width="1.2" stroke-dasharray="5 4"/>
+        <text x="852" y="272" class="box-title" fill="var(--warn)">Auth Server</text>
+        <text x="852" y="288" class="box-caption" fill="var(--text-muted)">Supabase Auth · Phase 5</text>
+
+        <rect x="660" y="330" width="150" height="62" rx="3" fill="none" stroke="var(--warn)" stroke-width="1.2" stroke-dasharray="5 4"/>
+        <text x="672" y="354" class="box-title" fill="var(--warn)">PostgreSQL DB</text>
+        <text x="672" y="370" class="box-caption" fill="var(--text-muted)">Supabase · Phase 5-6</text>
+
+        <rect x="840" y="330" width="150" height="62" rx="3" fill="none" stroke="var(--warn)" stroke-width="1.2" stroke-dasharray="5 4"/>
+        <text x="852" y="354" class="box-title" fill="var(--warn)">Payment Gateway</text>
+        <text x="852" y="370" class="box-caption" fill="var(--text-muted)">Stripe/Razorpay · Phase 6</text>
+
+        <line x1="576" y1="240" x2="660" y2="270" stroke="var(--warn)" stroke-width="1.2" stroke-dasharray="3 3" marker-end="url(#arrow-warn)"/>
+        <line x1="576" y1="246" x2="660" y2="355" stroke="var(--warn)" stroke-width="1.2" stroke-dasharray="3 3" marker-end="url(#arrow-warn)"/>
+        <text x="585" y="296" class="edge-label" fill="var(--warn)" transform="rotate(26 585 296)">planned — no code calls these today</text>
+      </svg>
+    </figure>
+    <figcaption>Fig. A — one real network hop exists today (browser↔Vercel); everything amber is a future hop described in Book 2.</figcaption>
+    <div class="sheet-footer"><span>WHYAI-ARCH-01 / SHEET A</span><span><b>Book 1</b> Ch.17 · <b>Book 2</b> Ch.2, Ch.10</span></div>
+  </section>
+
+  <!-- ===================== SHEET B ===================== -->
+  <section class="sheet">
+    <div class="sheet-head"><span class="sheet-num">SHEET B</span><h2>Class Diagram — Data Model (TypeScript Interfaces)</h2></div>
+    <p class="lede">The eight shapes on top are declared in <code style="font-family:var(--mono)">types/index.ts</code> — a complete, sensible data model for the whole product. The catch: trace every one of them through the real pages, and not one is actually imported anywhere yet. The three shapes below the line, defined separately per-feature, are what the running app really uses.</p>
+    <figure class="diagram-frame">
+      <svg viewBox="0 0 1180 650" role="img" aria-label="Class diagram: types/index.ts defines User, Course, Lesson, LessonContent, Problem, TestCase, Contest and Submission with composition relationships, but none are imported by any live page. The app instead actually uses two separate, unrelated local shapes: NewsItem from newsData.ts, and CourseContent/Lesson from courseContent.ts.">
+        <defs>
+          <marker id="dia" viewBox="0 0 16 10" refX="15" refY="5" markerWidth="13" markerHeight="9" orient="auto">
+            <polygon points="0,5 8,0 16,5 8,10" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.2"/>
+          </marker>
+          <marker id="assoc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+            <path d="M0,0 L10,5 L0,10" fill="none" stroke="var(--ink-soft)" stroke-width="1.4"/>
+          </marker>
+        </defs>
+
+        <!-- ===== row 1: shared types ===== -->
+        <!-- User -->
+        <rect x="30" y="40" width="190" height="118" rx="3" fill="var(--surface)" stroke="var(--warn)" stroke-width="1.3"/>
+        <text x="46" y="60" class="box-title" fill="var(--warn)">User</text>
+        <line x1="46" y1="68" x2="204" y2="68" stroke="var(--border)"/>
+        <text x="46" y="84" class="box-field" fill="var(--text)">id: string</text>
+        <text x="46" y="98" class="box-field" fill="var(--text)">email: string</text>
+        <text x="46" y="112" class="box-field" fill="var(--text)">name: string</text>
+        <text x="46" y="126" class="box-field" fill="var(--text-muted)">⋯ avatar?, createdAt</text>
+        <text x="46" y="146" class="box-caption" fill="var(--warn)">types/index.ts</text>
+
+        <!-- Course -->
+        <rect x="270" y="40" width="210" height="130" rx="3" fill="var(--surface)" stroke="var(--warn)" stroke-width="1.3"/>
+        <text x="286" y="60" class="box-title" fill="var(--warn)">Course</text>
+        <line x1="286" y1="68" x2="464" y2="68" stroke="var(--border)"/>
+        <text x="286" y="84" class="box-field" fill="var(--text)">id, title, level</text>
+        <text x="286" y="98" class="box-field" fill="var(--text)">lessons: Lesson[]</text>
+        <text x="286" y="112" class="box-field" fill="var(--text-muted)">⋯ description, thumbnail,</text>
+        <text x="286" y="126" class="box-field" fill="var(--text-muted)">    category, duration</text>
+        <text x="286" y="150" class="box-caption" fill="var(--warn)">types/index.ts</text>
+
+        <!-- Lesson(shared) -->
+        <rect x="540" y="40" width="200" height="118" rx="3" fill="var(--surface)" stroke="var(--warn)" stroke-width="1.3"/>
+        <text x="556" y="60" class="box-title" fill="var(--warn)">Lesson</text>
+        <line x1="556" y1="68" x2="724" y2="68" stroke="var(--border)"/>
+        <text x="556" y="84" class="box-field" fill="var(--text)">id, courseId, order</text>
+        <text x="556" y="98" class="box-field" fill="var(--text)">content: LessonContent</text>
+        <text x="556" y="112" class="box-field" fill="var(--text-muted)">⋯ title, description</text>
+        <text x="556" y="140" class="box-caption" fill="var(--warn)">types/index.ts</text>
+
+        <!-- LessonContent -->
+        <rect x="790" y="40" width="190" height="104" rx="3" fill="var(--surface)" stroke="var(--warn)" stroke-width="1.3"/>
+        <text x="806" y="60" class="box-title" fill="var(--warn)">LessonContent</text>
+        <line x1="806" y1="68" x2="964" y2="68" stroke="var(--border)"/>
+        <text x="806" y="84" class="box-field" fill="var(--text)">text?, video?</text>
+        <text x="806" y="98" class="box-field" fill="var(--text-muted)">⋯ gif?, code?</text>
+        <text x="806" y="126" class="box-caption" fill="var(--warn)">types/index.ts</text>
+
+        <!-- stamp: declared, never imported -->
+        <text x="1000" y="52" class="stamp" fill="var(--warn)" transform="rotate(-6 1000 52)">DECLARED, NEVER</text>
+        <text x="1000" y="67" class="stamp" fill="var(--warn)" transform="rotate(-6 1000 67)">IMPORTED — Ch.5 §5.3,</text>
+        <text x="1000" y="82" class="stamp" fill="var(--warn)" transform="rotate(-6 1000 82)">Ch.19 §19.7</text>
+
+        <!-- composition: Course -> Lesson -->
+        <line x1="480" y1="100" x2="536" y2="98" stroke="var(--ink)" stroke-width="1.3" marker-end="url(#dia)"/>
+        <text x="484" y="92" class="edge-label" fill="var(--ink-soft)">1 ⋯ 0..*</text>
+        <!-- assoc: Lesson -> LessonContent -->
+        <line x1="740" y1="98" x2="786" y2="96" stroke="var(--ink)" stroke-width="1.3" marker-end="url(#assoc)"/>
+        <text x="746" y="90" class="edge-label" fill="var(--ink-soft)">1 ⋯ 1</text>
+
+        <!-- ===== row 2: shared types continued ===== -->
+        <!-- Problem -->
+        <rect x="30" y="220" width="210" height="118" rx="3" fill="var(--surface)" stroke="var(--warn)" stroke-width="1.3"/>
+        <text x="46" y="240" class="box-title" fill="var(--warn)">Problem</text>
+        <line x1="46" y1="248" x2="224" y2="248" stroke="var(--border)"/>
+        <text x="46" y="264" class="box-field" fill="var(--text)">id, difficulty</text>
+        <text x="46" y="278" class="box-field" fill="var(--text)">testCases: TestCase[]</text>
+        <text x="46" y="292" class="box-field" fill="var(--text-muted)">⋯ title, category, tags,</text>
+        <text x="46" y="306" class="box-field" fill="var(--text-muted)">    constraints</text>
+        <text x="46" y="326" class="box-caption" fill="var(--warn)">types/index.ts</text>
+
+        <!-- TestCase -->
+        <rect x="300" y="220" width="180" height="104" rx="3" fill="var(--surface)" stroke="var(--warn)" stroke-width="1.3"/>
+        <text x="316" y="240" class="box-title" fill="var(--warn)">TestCase</text>
+        <line x1="316" y1="248" x2="464" y2="248" stroke="var(--border)"/>
+        <text x="316" y="264" class="box-field" fill="var(--text)">input: any</text>
+        <text x="316" y="278" class="box-field" fill="var(--text)">output: any</text>
+        <text x="316" y="292" class="box-field" fill="var(--text-muted)">explanation?</text>
+        <text x="316" y="312" class="box-caption" fill="var(--warn)">types/index.ts</text>
+
+        <!-- Contest -->
+        <rect x="540" y="220" width="210" height="118" rx="3" fill="var(--surface)" stroke="var(--warn)" stroke-width="1.3"/>
+        <text x="556" y="240" class="box-title" fill="var(--warn)">Contest</text>
+        <line x1="556" y1="248" x2="734" y2="248" stroke="var(--border)"/>
+        <text x="556" y="264" class="box-field" fill="var(--text)">id, participants</text>
+        <text x="556" y="278" class="box-field" fill="var(--text)">problems: Problem[]</text>
+        <text x="556" y="292" class="box-field" fill="var(--text-muted)">⋯ title, description,</text>
+        <text x="556" y="306" class="box-field" fill="var(--text-muted)">    startTime, endTime</text>
+        <text x="556" y="326" class="box-caption" fill="var(--warn)">types/index.ts — Ch.15</text>
+
+        <!-- Submission -->
+        <rect x="790" y="220" width="210" height="118" rx="3" fill="var(--surface)" stroke="var(--warn)" stroke-width="1.3"/>
+        <text x="806" y="240" class="box-title" fill="var(--warn)">Submission</text>
+        <line x1="806" y1="248" x2="984" y2="248" stroke="var(--border)"/>
+        <text x="806" y="264" class="box-field" fill="var(--text)">userId, problemId</text>
+        <text x="806" y="278" class="box-field" fill="var(--text)">status, code, language</text>
+        <text x="806" y="292" class="box-field" fill="var(--text-muted)">⋯ createdAt</text>
+        <text x="806" y="312" class="box-caption" fill="var(--warn)">types/index.ts</text>
+
+        <!-- composition: Problem -> TestCase -->
+        <line x1="240" y1="280" x2="296" y2="278" stroke="var(--ink)" stroke-width="1.3" marker-end="url(#dia)"/>
+        <text x="244" y="272" class="edge-label" fill="var(--ink-soft)">1 ⋯ 0..*</text>
+        <!-- composition: Contest -> Problem (back-reference, leftward) -->
+        <path d="M540,300 C 420,360 300,360 232,320" fill="none" stroke="var(--ink)" stroke-width="1.3" marker-end="url(#dia)"/>
+        <text x="330" y="358" class="edge-label" fill="var(--ink-soft)">problems: Problem[] — 1 ⋯ 0..*</text>
+
+        <!-- soft reference "airwires": Submission -> User / Problem -->
+        <path d="M800,236 C 500,120 300,110 222,118" fill="none" stroke="var(--ink-soft)" stroke-width="1.1" stroke-dasharray="3 4" marker-end="url(#assoc)"/>
+        <text x="420" y="150" class="edge-label" fill="var(--ink-soft)">userId (string) — soft ref, no FK</text>
+
+        <path d="M800,254 C 560,230 330,236 242,250" fill="none" stroke="var(--ink-soft)" stroke-width="1.1" stroke-dasharray="3 4" marker-end="url(#assoc)"/>
+        <text x="420" y="222" class="edge-label" fill="var(--ink-soft)">problemId (string) — soft ref, no FK</text>
+
+        <!-- divider -->
+        <line x1="20" y1="396" x2="1160" y2="396" stroke="var(--ink)" stroke-width="1.4" stroke-dasharray="2 5"/>
+        <text x="20" y="420" class="cap-label" fill="var(--text)">PAGE-LOCAL DATA SHAPES — separate files, never related to the types above (Ch.19 §19.7)</text>
+
+        <!-- ===== row 3: page-local shapes ===== -->
+        <!-- NewsItem -->
+        <rect x="30" y="440" width="230" height="150" rx="3" fill="var(--warn-bg)" stroke="var(--warn)" stroke-width="1.3"/>
+        <text x="46" y="460" class="box-title" fill="var(--warn)">NewsItem</text>
+        <line x1="46" y1="468" x2="244" y2="468" stroke="var(--border)"/>
+        <text x="46" y="484" class="box-field" fill="var(--text)">id, title, category</text>
+        <text x="46" y="498" class="box-field" fill="var(--text)">content (raw HTML)</text>
+        <text x="46" y="512" class="box-field" fill="var(--text-muted)">⋯ date, image, comments,</text>
+        <text x="46" y="526" class="box-field" fill="var(--text-muted)">    trending, author, readTime</text>
+        <text x="46" y="548" class="box-caption" fill="var(--warn)">pages/news/newsData.ts</text>
+        <text x="46" y="562" class="stamp" fill="var(--warn)">⚠ 2 independent copies exist</text>
+        <text x="46" y="576" class="box-caption" fill="var(--warn)">Ch.14 §14.1 · Ch.19 §19.5</text>
+
+        <!-- CourseContent -->
+        <rect x="330" y="440" width="230" height="130" rx="3" fill="var(--ok-bg)" stroke="var(--ok)" stroke-width="1.3"/>
+        <text x="346" y="460" class="box-title" fill="var(--ok)">CourseContent</text>
+        <line x1="346" y1="468" x2="544" y2="468" stroke="var(--border)"/>
+        <text x="346" y="484" class="box-field" fill="var(--text)">id, totalLessons</text>
+        <text x="346" y="498" class="box-field" fill="var(--text)">lessons: Lesson[] →</text>
+        <text x="346" y="512" class="box-field" fill="var(--text-muted)">⋯ title, description</text>
+        <text x="346" y="536" class="box-caption" fill="var(--ok)">courses/viewer/courseContent.ts</text>
+        <text x="346" y="552" class="stamp" fill="var(--ok)">✓ actually rendered — Ch.11 §11.2</text>
+
+        <!-- Lesson (viewer-local) -->
+        <rect x="630" y="440" width="220" height="130" rx="3" fill="var(--ok-bg)" stroke="var(--ok)" stroke-width="1.3"/>
+        <text x="646" y="460" class="box-title" fill="var(--ok)">Lesson (viewer)</text>
+        <line x1="646" y1="468" x2="834" y2="468" stroke="var(--border)"/>
+        <text x="646" y="484" class="box-field" fill="var(--text)">id, title, duration</text>
+        <text x="646" y="498" class="box-field" fill="var(--text)">content: string (HTML)</text>
+        <text x="646" y="512" class="box-field" fill="var(--text-muted)">⋯ image?, completed?</text>
+        <text x="646" y="536" class="box-caption" fill="var(--ok)">courses/viewer/courseContent.ts</text>
+        <text x="646" y="552" class="stamp" fill="var(--warn)">⚠ unrelated to shared "Lesson" above</text>
+
+        <!-- composition: CourseContent -> Lesson(viewer) -->
+        <line x1="560" y1="500" x2="626" y2="498" stroke="var(--ok)" stroke-width="1.3" marker-end="url(#dia)"/>
+        <text x="564" y="492" class="edge-label" fill="var(--ok)">1 ⋯ 0..*</text>
+      </svg>
+    </figure>
+    <figcaption>Fig. B — a complete, sensible data model exists on paper; the running app quietly built its own, smaller one instead.</figcaption>
+    <div class="sheet-footer"><span>WHYAI-ARCH-01 / SHEET B</span><span><b>Book 1</b> Ch.5 §5.3, Ch.11, Ch.14, Ch.19</span></div>
+  </section>
+
+  <!-- ===================== SHEET C ===================== -->
+  <section class="sheet">
+    <div class="sheet-head"><span class="sheet-num">SHEET C</span><h2>Class Diagram — Components, Context &amp; the Auth Dependency Bus</h2></div>
+    <p class="lede">React components drawn as classes (props/state/methods), the one real Context "class" that behaves like a service, and — drawn as a schematic bus rather than five crossing lines — exactly which pages actually depend on <code style="font-family:var(--mono)">useAuth()</code> today.</p>
+    <figure class="diagram-frame">
+      <svg viewBox="0 0 1040 760" role="img" aria-label="App calls useDarkMode and wraps everything in AuthProvider, which implements AuthContextType. Navbar, LoginDialog, CoursesPage, DashboardPage and ProfilePage all depend on useAuth via a shared bus. CourseViewer, PracticePage and NewsPage have no auth dependency at all.">
+        <defs>
+          <marker id="arr2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0,0 L10,5 L0,10" fill="none" stroke="var(--ink)" stroke-width="1.6"/>
+          </marker>
+          <marker id="tri" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="11" markerHeight="8" orient="auto">
+            <polygon points="0,0 13,5 0,10" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.2"/>
+          </marker>
+        </defs>
+
+        <!-- useDarkMode -->
+        <rect x="30" y="40" width="190" height="92" rx="3" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.3"/>
+        <text x="46" y="60" class="box-title" fill="var(--ink)">useDarkMode «hook»</text>
+        <line x1="46" y1="68" x2="204" y2="68" stroke="var(--border)"/>
+        <text x="46" y="84" class="box-field" fill="var(--text)">darkMode: boolean</text>
+        <text x="46" y="100" class="box-field" fill="var(--text)">+toggleDarkMode()</text>
+        <text x="46" y="120" class="box-caption" fill="var(--text-muted)">hooks/useDarkMode.ts · Ch.7</text>
+
+        <!-- AuthContextType -->
+        <rect x="290" y="40" width="240" height="124" rx="3" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.5"/>
+        <text x="306" y="60" class="box-title" fill="var(--ink)">AuthContextType «interface»</text>
+        <line x1="306" y1="68" x2="514" y2="68" stroke="var(--border)"/>
+        <text x="306" y="84" class="box-field" fill="var(--text)">user: User | null</text>
+        <text x="306" y="98" class="box-field" fill="var(--text)">isAuthenticated: boolean</text>
+        <text x="306" y="114" class="box-field" fill="var(--text)">+login(email, pwd)</text>
+        <text x="306" y="128" class="box-field" fill="var(--text)">+signup(name,email,pwd) +logout()</text>
+        <text x="306" y="150" class="box-caption" fill="var(--text-muted)">contexts/AuthContext.tsx · Ch.6 §6.1</text>
+
+        <!-- AuthProvider -->
+        <rect x="600" y="40" width="230" height="110" rx="3" fill="var(--warn-bg)" stroke="var(--warn)" stroke-width="1.3"/>
+        <text x="616" y="60" class="box-title" fill="var(--warn)">AuthProvider «component»</text>
+        <line x1="616" y1="68" x2="814" y2="68" stroke="var(--border)"/>
+        <text x="616" y="84" class="box-field" fill="var(--text)">-user: User | null</text>
+        <text x="616" y="100" class="box-field" fill="var(--text)">+login() — fake 1s delay, no check</text>
+        <text x="616" y="114" class="box-field" fill="var(--text)">+signup() +logout()</text>
+        <text x="616" y="136" class="box-caption" fill="var(--warn)">mock today · Ch.6 §6.3 — real in Book 2 Ch.5</text>
+
+        <!-- realization arrow AuthProvider -> AuthContextType -->
+        <line x1="598" y1="100" x2="536" y2="100" stroke="var(--ink)" stroke-width="1.3" stroke-dasharray="5 3" marker-end="url(#tri)"/>
+        <text x="538" y="90" class="edge-label" fill="var(--ink-soft)">provides ▷</text>
+
+        <!-- App -->
+        <rect x="30" y="230" width="190" height="100" rx="3" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.4"/>
+        <text x="46" y="250" class="box-title" fill="var(--ink)">App «root»</text>
+        <line x1="46" y1="258" x2="204" y2="258" stroke="var(--border)"/>
+        <text x="46" y="274" class="box-field" fill="var(--text)">calls useDarkMode()</text>
+        <text x="46" y="288" class="box-field" fill="var(--text)">renders: Navbar, Routes,</text>
+        <text x="46" y="302" class="box-field" fill="var(--text)">  Footer, Toaster</text>
+        <text x="46" y="320" class="box-caption" fill="var(--text-muted)">App.tsx · Book1 Ch.5 §5.1</text>
+
+        <!-- App -> useDarkMode (vertical, aligned) -->
+        <line x1="125" y1="228" x2="125" y2="136" stroke="var(--ink)" stroke-width="1.3" marker-end="url(#arr2)"/>
+        <text x="132" y="186" class="edge-label" fill="var(--ink-soft)">calls</text>
+
+        <!-- App -> AuthProvider orthogonal elbow -->
+        <path d="M220,250 H268 V196 H715 V154" fill="none" stroke="var(--ink)" stroke-width="1.3" marker-end="url(#arr2)"/>
+        <text x="290" y="190" class="edge-label" fill="var(--ink-soft)">wraps everything in ⟶</text>
+
+        <!-- Navbar -->
+        <rect x="290" y="230" width="190" height="110" rx="3" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.3"/>
+        <text x="306" y="250" class="box-title" fill="var(--ink)">Navbar</text>
+        <line x1="306" y1="258" x2="464" y2="258" stroke="var(--border)"/>
+        <text x="306" y="274" class="box-field" fill="var(--text)">props: darkMode,</text>
+        <text x="306" y="288" class="box-field" fill="var(--text)">  toggleDarkMode</text>
+        <text x="306" y="302" class="box-field" fill="var(--text)">state: mobileMenuOpen,</text>
+        <text x="306" y="316" class="box-field" fill="var(--text)">  showLoginDialog</text>
+        <text x="306" y="334" class="box-caption" fill="var(--text-muted)">components/common/Navbar.tsx · Ch.8</text>
+
+        <!-- App -> Navbar -->
+        <line x1="220" y1="280" x2="286" y2="280" stroke="var(--ink)" stroke-width="1.3" marker-end="url(#arr2)"/>
+        <text x="228" y="274" class="edge-label" fill="var(--ink-soft)">renders</text>
+
+        <!-- LoginDialog -->
+        <rect x="550" y="230" width="190" height="100" rx="3" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.3"/>
+        <text x="566" y="250" class="box-title" fill="var(--ink)">LoginDialog</text>
+        <line x1="566" y1="258" x2="724" y2="258" stroke="var(--border)"/>
+        <text x="566" y="274" class="box-field" fill="var(--text)">props: open, onOpenChange</text>
+        <text x="566" y="288" class="box-field" fill="var(--text)">state: email, password,</text>
+        <text x="566" y="302" class="box-field" fill="var(--text)">  name, isLoading</text>
+        <text x="566" y="320" class="box-caption" fill="var(--text-muted)">pages/landing/LoginDialog.tsx · Ch.10</text>
+
+        <!-- Navbar -> LoginDialog -->
+        <line x1="480" y1="280" x2="546" y2="280" stroke="var(--ink)" stroke-width="1.3" marker-end="url(#arr2)"/>
+        <text x="486" y="274" class="edge-label" fill="var(--ink-soft)">renders (on click)</text>
+
+        <!-- Footer -->
+        <rect x="800" y="230" width="190" height="80" rx="3" fill="var(--surface-2)" stroke="var(--ink)" stroke-width="1.3"/>
+        <text x="816" y="252" class="box-title" fill="var(--ink)">Footer</text>
+        <line x1="816" y1="260" x2="974" y2="260" stroke="var(--border)"/>
+        <text x="816" y="276" class="box-field" fill="var(--text-muted)">static — no props/state</text>
+        <text x="816" y="296" class="box-caption" fill="var(--text-muted)">components/common/Footer.tsx · Ch.8</text>
+
+        <!-- App -> Footer (elbow) -->
+        <path d="M220,300 H760 V250" fill="none" stroke="var(--ink)" stroke-width="1.2" stroke-dasharray="2 4" marker-end="url(#arr2)"/>
+
+        <!-- bus -->
+        <line x1="150" y1="470" x2="880" y2="470" stroke="var(--ink-soft)" stroke-width="1.6" stroke-dasharray="6 4"/>
+        <text x="160" y="458" class="edge-label" fill="var(--ink-soft)">useAuth() bus — reads user, isAuthenticated · calls login/signup/logout</text>
+        <line x1="406" y1="164" x2="406" y2="470" stroke="var(--ink-soft)" stroke-width="1.3" stroke-dasharray="6 4"/>
+
+        <!-- ticks down to bus from row2 -->
+        <line x1="385" y1="340" x2="385" y2="470" stroke="var(--ink-soft)" stroke-width="1.2" stroke-dasharray="3 3"/>
+        <line x1="645" y1="330" x2="645" y2="470" stroke="var(--ink-soft)" stroke-width="1.2" stroke-dasharray="3 3"/>
+
+        <!-- row3: CoursesPage / DashboardPage / ProfilePage -->
+        <rect x="100" y="500" width="190" height="88" rx="3" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.3"/>
+        <text x="116" y="520" class="box-title" fill="var(--ink)">CoursesPage</text>
+        <line x1="116" y1="528" x2="274" y2="528" stroke="var(--border)"/>
+        <text x="116" y="544" class="box-field" fill="var(--text)">state: activeTab</text>
+        <text x="116" y="558" class="box-field" fill="var(--text)">uses: useAuth()</text>
+        <text x="116" y="576" class="box-caption" fill="var(--text-muted)">pages/courses/index.tsx · Ch.11</text>
+        <line x1="195" y1="500" x2="195" y2="470" stroke="var(--ink-soft)" stroke-width="1.2" stroke-dasharray="3 3"/>
+
+        <rect x="340" y="500" width="190" height="88" rx="3" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.3"/>
+        <text x="356" y="520" class="box-title" fill="var(--ink)">DashboardPage</text>
+        <line x1="356" y1="528" x2="514" y2="528" stroke="var(--border)"/>
+        <text x="356" y="544" class="box-field" fill="var(--text)">guard: !isAuthenticated</text>
+        <text x="356" y="558" class="box-field" fill="var(--text)">uses: useAuth()</text>
+        <text x="356" y="576" class="box-caption" fill="var(--text-muted)">pages/dashboard/index.tsx · Ch.13</text>
+        <line x1="435" y1="500" x2="435" y2="470" stroke="var(--ink-soft)" stroke-width="1.2" stroke-dasharray="3 3"/>
+
+        <rect x="580" y="500" width="190" height="88" rx="3" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.3"/>
+        <text x="596" y="520" class="box-title" fill="var(--ink)">ProfilePage</text>
+        <line x1="596" y1="528" x2="754" y2="528" stroke="var(--border)"/>
+        <text x="596" y="544" class="box-field" fill="var(--text)">guard: !isAuthenticated</text>
+        <text x="596" y="558" class="box-field" fill="var(--text)">uses: useAuth()</text>
+        <text x="596" y="576" class="box-caption" fill="var(--text-muted)">pages/profile/index.tsx · Ch.13</text>
+        <line x1="675" y1="500" x2="675" y2="470" stroke="var(--ink-soft)" stroke-width="1.2" stroke-dasharray="3 3"/>
+
+        <!-- separation note -->
+        <text x="100" y="628" class="cap-label" fill="var(--text)">NO AUTH DEPENDENCY — never calls useAuth()</text>
+
+        <rect x="100" y="650" width="190" height="72" rx="3" fill="var(--ok-bg)" stroke="var(--ok)" stroke-width="1.2"/>
+        <text x="116" y="672" class="box-title" fill="var(--ok)">CourseViewer</text>
+        <text x="116" y="690" class="box-field" fill="var(--text)">state: completedLessons</text>
+        <text x="116" y="706" class="box-caption" fill="var(--text-muted)">courses/viewer/CourseViewer.tsx</text>
+
+        <rect x="340" y="650" width="190" height="72" rx="3" fill="var(--ok-bg)" stroke="var(--ok)" stroke-width="1.2"/>
+        <text x="356" y="672" class="box-title" fill="var(--ok)">PracticePage</text>
+        <text x="356" y="690" class="box-field" fill="var(--text)">state: code, output</text>
+        <text x="356" y="706" class="box-caption" fill="var(--text-muted)">pages/practice/index.tsx · Ch.12</text>
+
+        <rect x="580" y="650" width="190" height="72" rx="3" fill="var(--ok-bg)" stroke="var(--ok)" stroke-width="1.2"/>
+        <text x="596" y="672" class="box-title" fill="var(--ok)">NewsPage / NewsDetail</text>
+        <text x="596" y="690" class="box-field" fill="var(--text)">state: selectedCategory</text>
+        <text x="596" y="706" class="box-caption" fill="var(--text-muted)">pages/news/* · Ch.14</text>
+      </svg>
+    </figure>
+    <figcaption>Fig. C — five components share one dependency (drawn as a bus, not five crossing wires); three pages have none at all.</figcaption>
+    <div class="sheet-footer"><span>WHYAI-ARCH-01 / SHEET C</span><span><b>Book 1</b> Ch.6, Ch.8, Ch.11–14</span></div>
+  </section>
+
+  <footer class="colophon">
+    Full prose explanation of every box on these three sheets lives in
+    <a href="#">docs/book-1-codebase-explained/</a> (Ch.5–19, code-level) and
+    <a href="#">docs/book-2-tech-stack-and-scale/</a> (target architecture once a backend exists).
+    This sheet documents only what runs today — nothing amber on Sheet A, or warn-colored on
+    Sheets B/C, exists in the running application yet.
+  </footer>
+
+</div>

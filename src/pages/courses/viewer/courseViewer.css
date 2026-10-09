@@ -1,0 +1,186 @@
+/* Hand-written styling for the course viewer: the chapter sidebar's active/hover
+   states, and all lesson-body typography (headings, paragraphs, lists, code,
+   blockquotes). Written as real CSS rather than Tailwind utility classes on
+   purpose — this app's CSS is a static, pre-built file (see
+   docs/book-1-codebase-explained/03-tooling-and-config.md §3.5), so any utility
+   class not already used elsewhere in the app (including most responsive `md:`/
+   `lg:` variants and many solid `bg-*-600` fills) silently does nothing. Plain
+   CSS here always works. Dark mode keys off the app's real `.dark` class on
+   <html> (see hooks/useDarkMode.ts), matching courseDiagrams.css. */
+
+/* ---------- Sidebar label ---------- */
+
+.cv-sidebar-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-gray-400);
+  margin: 0 0 0.75rem;
+  padding: 0 0.75rem;
+}
+.dark .cv-sidebar-label {
+  color: var(--color-gray-500);
+}
+
+/* ---------- Chapter index / sidebar nav ---------- */
+
+.cv-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  text-align: left;
+  padding: 0.55rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.3;
+  color: var(--color-gray-700);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+.dark .cv-nav-item {
+  color: var(--color-gray-300);
+}
+.cv-nav-item:hover:not(.cv-nav-item--active):not(:disabled) {
+  background: var(--color-gray-100);
+}
+.dark .cv-nav-item:hover:not(.cv-nav-item--active):not(:disabled) {
+  background: var(--color-gray-800);
+}
+.cv-nav-item--active {
+  background: var(--color-blue-500);
+  color: var(--color-white);
+  font-weight: 600;
+}
+.cv-nav-item:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.cv-nav-num {
+  flex-shrink: 0;
+  width: 1.25rem;
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+.cv-nav-title {
+  flex: 1;
+}
+
+/* ---------- Lesson content typography ---------- */
+
+.lesson-content {
+  font-size: 0.975rem;
+  line-height: 1.75;
+  color: var(--color-gray-700);
+}
+.dark .lesson-content {
+  color: var(--color-gray-300);
+}
+
+.lesson-content h2 {
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: var(--color-gray-900);
+  margin: 2.25rem 0 0.9rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--color-blue-100);
+}
+.dark .lesson-content h2 {
+  color: var(--color-white);
+  border-bottom-color: var(--color-gray-700);
+}
+.lesson-content h2:first-child {
+  margin-top: 0;
+}
+
+.lesson-content h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-blue-700, var(--color-blue-600));
+  margin: 1.75rem 0 0.6rem;
+}
+.dark .lesson-content h3 {
+  color: var(--color-blue-400);
+}
+
+.lesson-content p {
+  margin: 0 0 1.1rem;
+}
+
+.lesson-content ul,
+.lesson-content ol {
+  margin: 0 0 1.2rem;
+  padding-left: 1.4rem;
+}
+.lesson-content li {
+  margin-bottom: 0.45rem;
+}
+.lesson-content li::marker {
+  color: var(--color-blue-500);
+}
+
+.lesson-content strong {
+  color: var(--color-gray-900);
+  font-weight: 700;
+}
+.dark .lesson-content strong {
+  color: var(--color-white);
+}
+
+.lesson-content a {
+  color: var(--color-blue-600);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.dark .lesson-content a {
+  color: var(--color-blue-400);
+}
+
+.lesson-content code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.85em;
+  background: var(--color-blue-50);
+  color: var(--color-blue-700, var(--color-blue-600));
+  padding: 0.15em 0.4em;
+  border-radius: 0.3em;
+}
+.dark .lesson-content code {
+  background: rgba(59, 130, 246, 0.12);
+  color: var(--color-blue-400);
+}
+
+.lesson-content pre {
+  background: var(--color-gray-900);
+  color: var(--color-white);
+  padding: 1rem 1.15rem;
+  border-radius: 0.6rem;
+  overflow-x: auto;
+  margin: 1.4rem 0;
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+.lesson-content pre code {
+  background: none;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+}
+
+.lesson-content blockquote {
+  margin: 1.5rem 0;
+  padding: 0.9rem 1.2rem;
+  border-left: 4px solid var(--color-blue-500);
+  background: var(--color-blue-50);
+  border-radius: 0 0.5rem 0.5rem 0;
+  font-size: 0.92rem;
+  color: var(--color-gray-700);
+}
+.dark .lesson-content blockquote {
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--color-gray-300);
+}
+.lesson-content blockquote p {
+  margin: 0;
+}
